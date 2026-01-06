@@ -2,15 +2,13 @@ package com.example.myapplication.user_auth.resetPassword;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.myapplication.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -30,8 +28,12 @@ public class OtpActivity extends AppCompatActivity {
         code3 = findViewById(R.id.code3);
         code4 = findViewById(R.id.code4);
         buttonverify = findViewById(R.id.verifyButton);
+        if (buttonverify == null) {
+            Log.e("DEBUG", "Botón verifyButton es null! Revisa setContentView y el ID");
+        } else {
+            Log.d("DEBUG", "Botón verifyButton encontrado correctamente");
+        }
 
-        // Email recibido de Forget_Password
         email = getIntent().getStringExtra("email");
 
         setupOtpInputs();
@@ -47,7 +49,7 @@ public class OtpActivity extends AppCompatActivity {
                 return;
             }
 
-            verifyOtp(email, otp);
+            verifyOTP(email, otp);
         });
     }
 
@@ -58,39 +60,33 @@ public class OtpActivity extends AppCompatActivity {
         code4.addTextChangedListener(new OtpTextWatcher(code4, null));
     }
 
-    private void verifyOtp(String email, String otp) {
-        FirebaseFirestore.getInstance()
-                .collection("password_resets")
-                .document(email)
+    private void verifyOTP(String email, String enteredOTP) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("password_otps").document(email)
                 .get()
-                .addOnSuccessListener(snapshot -> {
-                    if (!snapshot.exists()) {
-                        Toast.makeText(this, "Code not found", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+                .addOnSuccessListener(document -> {
+                    if (document.exists()) {
+                        String otp = document.getString("otp");
+                        long expiration = document.getLong("expiration");
 
-                    String savedCode = snapshot.getString("code");
-                    long expiresAt = snapshot.getLong("expiresAt");
+                        if (System.currentTimeMillis() > expiration) {
+                            Toast.makeText(this, "El código OTP ha expirado", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
-                    if (System.currentTimeMillis() > expiresAt) {
-                        Toast.makeText(this, "Code expired", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    if (otp.equals(savedCode)) {
-                        Toast.makeText(this, "Code verified", Toast.LENGTH_SHORT).show();
-
-                        // Aquí pasas a reset password
-                        Intent intent = new Intent(this, ResetPassword.class);
-                        intent.putExtra("email", email);
-                        startActivity(intent);
-                        finish();
+                        if (otp.equals(enteredOTP)) {
+                            // OTP correcto → ir a pantalla de restablecer contraseña
+                            Intent intent = new Intent(this, ResetPassword.class);
+                            intent.putExtra("email", email);
+                            startActivity(intent);
+                            finish(); // opcional: cerrar pantalla de OTP
+                        } else {
+                            Toast.makeText(this, "Código OTP incorrecto", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(this, "Invalid code", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No se encontró el código OTP", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error verifying code", Toast.LENGTH_SHORT).show()
-                );
+                .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }

@@ -30,16 +30,17 @@ public class ResetPassword extends AppCompatActivity {
         email = getIntent().getStringExtra("email");
 
         resetPasswordButton.setOnClickListener(v -> {
-            String pass1 = newPassword.getText().toString().trim();
-            String pass2 = confirmPassword.getText().toString().trim();
+            String newPasswordText = newPassword.getText().toString().trim();
+            String confirmPasswordText= confirmPassword.getText().toString().trim();
 
-            if (pass1.isEmpty() || pass2.isEmpty()) {
-                Toast.makeText(this, "Fill all fields", Toast.LENGTH_SHORT).show();
+            // 4️⃣ Validaciones
+            if (newPassword.length() < 6) {
+                newPassword.setError("La contraseña debe tener al menos 6 caracteres");
                 return;
             }
 
-            if (!pass1.equals(pass2)) {
-                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+            if (!newPassword.equals(confirmPassword)) {
+                confirmPassword.setError("Las contraseñas no coinciden");
                 return;
             }
 
