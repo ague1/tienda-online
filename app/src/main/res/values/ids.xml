@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="detailOrderId" type="id" />
+    <item name="detailStatus" type="id" />
+    <item name="detailTotal" type="id" />
+    <item name="detailDate" type="id" />
+    <item name="itemsContainer" type="id" />
+</resources>

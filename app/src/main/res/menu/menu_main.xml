@@ -1,0 +1,31 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.myapplication.MainActivity">
+    <item
+        android:id="@+id/action_home"
+        android:orderInCategory="100"
+        android:icon="@drawable/baseline_home_24"
+        android:title="@string/action_home"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_product"
+        android:orderInCategory="100"
+        android:icon="@drawable/baseline_assignment_24"
+        android:title="@string/action_order"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_car"
+        android:orderInCategory="100"
+        android:icon="@drawable/baseline_shopping_cart_24"
+        android:title="@string/action_car"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_account"
+        android:orderInCategory="100"
+        android:icon="@drawable/baseline_person_24"
+        android:title="@string/action_account"
+        app:showAsAction="never" />
+
+</menu>
