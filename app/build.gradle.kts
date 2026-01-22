@@ -16,12 +16,31 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            "\"http://10.0.2.2:3000\""
+        )
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        debug {
+            // Backend local (emulador)
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"http://10.0.2.2:3000\""
+            )
+        }
         release {
             isMinifyEnabled = false
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"https://api.tuservidor.com\""
+            )
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -34,6 +53,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -48,6 +68,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation ("com.google.firebase:firebase-database:22.0.1")
     implementation ("com.google.firebase:firebase-auth:24.0.1")
     implementation ("androidx.credentials:credentials:1.5.0")

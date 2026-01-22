@@ -13,3 +13,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+backend-OTP/config/serviceAccountKey.json
+backend-OTP/.env
+
+node_modules/
+backend-OTP/node_modules/
+
