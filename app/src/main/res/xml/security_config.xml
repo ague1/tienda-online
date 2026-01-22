@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<security-config>
+
+    <!-- DESARROLLO: solo backend local -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain>10.0.2.2</domain>
+    </domain-config>
+
+    <!-- PRODUCCIÓN: solo HTTPS permitido -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">api.tuservidor.com</domain>
+    </domain-config>
+
+</security-config>

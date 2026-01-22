@@ -2,7 +2,6 @@ package com.example.myapplication.user_auth.resetPassword;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,13 +14,23 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.myapplication.R;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.functions.FirebaseFunctions;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+import com.example.myapplication.BuildConfig;
+import com.example.network.ApiEndpoints;
+
 import java.util.Random;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Forget_Passord extends AppCompatActivity {
 
@@ -54,29 +63,52 @@ public class Forget_Passord extends AppCompatActivity {
     }
 
     private void sendOTPToEmail(String email) {
-        String otp = generateOTP(6); // función abajo
-        long expiration = System.currentTimeMillis() + 10 * 60 * 1000; // 10 minutos
+        OkHttpClient client = new OkHttpClient();
 
-        // Guardar OTP en Firestore
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> data = new HashMap<>();
-        data.put("otp", otp);
-        data.put("expiration", expiration);
+        JSONObject json = new JSONObject();
+        try {
+            json.put("email", email);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        db.collection("password_otps").document(email)
-                .set(data)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "OTP enviado al correo", Toast.LENGTH_SHORT).show();
-                    // Aquí se enviaría el OTP por correo usando Cloud Function
-                    Intent intent = new Intent(this, OtpActivity.class);
-                    intent.putExtra("email", email); // Pasamos el email para validar después
+        RequestBody body = RequestBody.create(
+                MediaType.parse("application/json"),
+                json.toString()
+        );
+
+        Request request = new Request.Builder()
+                .url(ApiEndpoints.SEND_OTP)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(Forget_Passord.this,
+                                "Error de conexión con servidor",
+                                Toast.LENGTH_LONG).show()
+                );
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+
+                runOnUiThread(() -> {
+                    Toast.makeText(Forget_Passord.this,
+                            "OTP enviado al correo",
+                            Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(Forget_Passord.this, OtpActivity.class);
+                    intent.putExtra("email", email);
                     startActivity(intent);
-
-                    // Opcional: cerrar la pantalla actual para que el usuario no pueda volver
                     finish();
-
-                })
-                .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                });
+            }
+        });
     }
 
     // Generar OTP

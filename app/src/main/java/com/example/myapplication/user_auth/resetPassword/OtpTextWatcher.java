@@ -7,10 +7,12 @@ import android.widget.EditText;
 public class OtpTextWatcher implements TextWatcher {
     private final EditText current;
     private final EditText next;
+    private final EditText previous;
 
-    public OtpTextWatcher(EditText current, EditText next) {
+    public OtpTextWatcher(EditText current, EditText next, EditText previous) {
         this.current = current;
         this.next = next;
+        this.previous = previous;
     }
 
     @Override
