@@ -15,7 +15,7 @@
 local.properties
 backend-OTP/config/serviceAccountKey.json
 backend-OTP/.env
-
+src/google-service.json
 node_modules/
 backend-OTP/node_modules/
 
