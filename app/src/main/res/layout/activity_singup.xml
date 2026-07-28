@@ -7,7 +7,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".user_auth.Singup"
+    tools:context=".app.common.activity.SignupActivity"
     android:background="@color/main_screen">
 
     <androidx.cardview.widget.CardView

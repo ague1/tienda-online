@@ -17,29 +17,29 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
-            android:name=".DeliveryOrderActivity"
+            android:name=".app.delivery.activity.DeliveryOrderActivity"
             android:exported="false" />
         <activity
-            android:name=".user_auth.resetPassword.OtpActivity"
+            android:name=".app.common.activity.OtpActivity"
             android:exported="false" />
         <activity
-            android:name=".pedidos.OrderProcessActivity"
+            android:name=".app.client.activity.OrderProcessActivity"
             android:exported="false" />
         <activity
-            android:name=".user_auth.resetPassword.Forget_Passord"
+            android:name=".app.common.activity.ForgotPasswordActivity"
             android:exported="false" />
 
         <activity
-            android:name=".user_auth.resetPassword.ResetPassword"
+            android:name=".app.common.activity.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".user_auth.Singup"
+            android:name=".app.common.activity.SignupActivity"
             android:exported="false" />
         <activity
-            android:name=".user_auth.Login"
+            android:name=".app.common.activity.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".app.common.activity.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
