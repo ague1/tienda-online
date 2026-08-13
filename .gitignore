@@ -20,3 +20,5 @@ app/google-services.json
 node_modules/
 backend-OTP/node_modules/
 
+backend-OTP/config
+backend-OTP/.env

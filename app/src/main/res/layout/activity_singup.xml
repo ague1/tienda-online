@@ -7,7 +7,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".app.common.activity.SignupActivity"
+    tools:context=".features.auth.activity.SignupActivity"
     android:background="@color/main_screen">
 
     <androidx.cardview.widget.CardView
@@ -120,35 +120,6 @@
                     android:inputType="textPassword"
                     android:background="@drawable/custumer"
                     android:padding="8dp"/>
-
-                <!-- TIPO DE CUENTA -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:text="Tipo de cuenta"
-                    android:textSize="18sp" />
-
-                <RadioGroup
-                    android:id="@+id/radioUserType"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <RadioButton
-                        android:id="@+id/radioUser"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Usuario normal"
-                        android:checked="true"/>
-
-                    <RadioButton
-                        android:id="@+id/radioDelivery"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Quiero ser Delivery (Repartidor)" />
-
-                </RadioGroup>
 
                 <!-- BOTÓN REGISTRARSE -->
                 <Button
