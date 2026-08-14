@@ -127,6 +127,52 @@ app.post('/verify-otp', async (req, res) => {
   }
 });
 
+app.post('/reset-password', async (req, res) => {
+
+  try {
+
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email y contraseña requeridos"
+      });
+    }
+
+
+    // Buscar usuario en Firebase Auth
+    const user = await admin.auth().getUserByEmail(email);
+
+
+    // Actualizar contraseña
+    await admin.auth().updateUser(user.uid, {
+      password: password
+    });
+
+
+    res.json({
+      success: true,
+      message: "Contraseña actualizada correctamente"
+    });
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+
+  }
+
+});
 // --- Iniciar servidor ---
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor escuchando en puerto ${PORT}`));
+
+//app.listen(PORT, () => console.log(`Servidor escuchando en puerto ${PORT}`));
+app.listen(PORT, "0.0.0.0", () =>
+    console.log(`Servidor escuchando en puerto ${PORT}`)
+);

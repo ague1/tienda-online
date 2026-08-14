@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
+    alias(libs.plugins.hilt)
+
 
 
 }
@@ -19,7 +21,9 @@ android {
         buildConfigField(
             "String",
             "BASE_URL",
-            "\"http://10.0.2.2:3000\""
+            //"\"http://10.0.2.2:3000\""
+            "\"http://192.168.100.19:3000\""
+
         )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -31,7 +35,7 @@ android {
             buildConfigField(
                 "String",
                 "BASE_URL",
-                "\"http://10.0.2.2:3000\""
+                "\"http://192.168.100.19:3000\""
             )
         }
         release {
@@ -80,6 +84,8 @@ dependencies {
     implementation ("com.google.zxing:core:3.5.0")
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation ("com.google.firebase:firebase-functions")
+    implementation(libs.hilt.android)
+    annotationProcessor(libs.hilt.compiler)
 
 }
 

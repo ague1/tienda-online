@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".app.common.activity.MainActivity">
+    tools:context=".features.auth.activity.MainActivity">
 
     <FrameLayout
         android:id="@+id/frame_layout"

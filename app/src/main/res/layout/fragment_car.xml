@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".app.client.fragment.CartFragment"
+    tools:context=".features.cart.fragment.CartFragment"
     android:padding="30dp">
 
     <TextView
