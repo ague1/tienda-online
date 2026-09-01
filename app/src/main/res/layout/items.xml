@@ -3,6 +3,7 @@
     android:layout_width="200dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginEnd="8dp"
     app:cardCornerRadius="12dp"
     android:elevation="4dp">
@@ -16,9 +17,11 @@
         <ImageView
             android:id="@+id/imgProducto"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="@dimen/product_image_height"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_foreground" />
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/product_image"/>
+
 
         <TextView
             android:id="@+id/txtNombreProducto"
@@ -38,26 +41,48 @@
             android:textColor="@android:color/darker_gray"
             android:layout_marginBottom="4dp" />
 
+        <!-- Precio normal -->
         <TextView
-            android:id="@+id/txtPrecio"
+            android:id="@+id/txtPrecioNormal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="$9.99"
-            android:textSize="20sp"
-            android:textColor="@android:color/black"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp" />
+            android:text="$30.00"
+            android:layout_marginBottom="2dp"
+            style="@style/ProductNormalPrice" />
+
+        <!-- Precio especial -->
+        <TextView
+            android:id="@+id/txtPrecioEspecial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$24.00"
+            android:visibility="gone"
+            style="@style/ProductSpecialPrice"
+            tools:visibility="visible" />
 
         <!-- Botón añadir + contador -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/btnAñadirCarrito"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAnadirCarrito"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Añadir al carrito" />
+                android:layout_height="48dp"
+                android:text="Añadir al carrito"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:padding="0dp"
+
+                app:backgroundTint="#263963"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/baseline_shopping_cart_24"
+                app:iconTint="@android:color/white"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:rippleColor="#40263963" />
 
             <LinearLayout
                 android:id="@+id/layoutContador"
@@ -67,11 +92,21 @@
                 android:gravity="center"
                 android:visibility="gone">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnMenos"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:text="–" />
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="0dp"
+                    android:text="−"
+                    android:textColor="#263963"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@android:color/white"
+                    app:cornerRadius="10dp"
+                    app:strokeColor="#263963"
+                    app:strokeWidth="1dp" />
 
                 <TextView
                     android:id="@+id/txtCantidad"
@@ -79,13 +114,26 @@
                     android:layout_height="40dp"
                     android:gravity="center"
                     android:text="1"
-                    android:textSize="16sp" />
+                    android:textColor="#263963"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnMas"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:text="+" />
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="0dp"
+                    android:text="+"
+                    android:textColor="#263963"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@android:color/white"
+                    app:cornerRadius="10dp"
+                    app:strokeColor="#263963"
+                    app:strokeWidth="1dp" />
+
             </LinearLayout>
 
         </FrameLayout>

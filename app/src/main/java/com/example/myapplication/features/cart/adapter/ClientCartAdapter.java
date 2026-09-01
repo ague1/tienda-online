@@ -11,18 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.features.product.model.Product;
+import com.example.myapplication.features.cart.model.CartItem;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
 public class ClientCartAdapter extends RecyclerView.Adapter<ClientCartAdapter.ViewHolder> {
-    private List<Product> productList;
+    private List<CartItem> itemList;
     private OnCartActionListener actionListener;
 
     public interface OnCartActionListener {
-        void onIncrease(Product product);
-        void onDecrease(Product product);
+        void onIncrease(CartItem item);
+        void onDecrease(CartItem item);
     }
 
 
@@ -30,8 +30,8 @@ public class ClientCartAdapter extends RecyclerView.Adapter<ClientCartAdapter.Vi
         this.actionListener = listener;
     }
 
-    public ClientCartAdapter(List<Product> productList) {
-        this.productList = productList;
+    public ClientCartAdapter(List<CartItem> itemList) {
+        this.itemList = itemList;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -65,18 +65,18 @@ public class ClientCartAdapter extends RecyclerView.Adapter<ClientCartAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ClientCartAdapter.ViewHolder holder, int position) {
 
-        Product product = productList.get(position);
+        CartItem item = itemList.get(position);
 
-        holder.txtNombreProducto.setText(product.getNombre());
-        holder.txtCantidad.setText(String.valueOf(product.getCantidad()));
+        holder.txtNombreProducto.setText(item.getNombre());
+        holder.txtCantidad.setText(String.valueOf(item.getQuantity()));
         DecimalFormat df = new DecimalFormat("0.00");
-        double totalPrecio = product.getPrecio() * product.getCantidad();
+        double totalPrecio = item.getPrecio() * item.getQuantity();
         holder.txtPrecio.setText("$" + df.format(totalPrecio));
         // SUMAR
         holder.btnMas.setOnClickListener(v -> {
 
             if (actionListener != null) {
-                actionListener.onIncrease(product);
+                actionListener.onIncrease(item);
             }
 
         });
@@ -85,7 +85,7 @@ public class ClientCartAdapter extends RecyclerView.Adapter<ClientCartAdapter.Vi
         holder.btnMenos.setOnClickListener(v -> {
 
             if (actionListener != null) {
-                actionListener.onDecrease(product);
+                actionListener.onDecrease(item);
             }
 
         });
@@ -93,11 +93,11 @@ public class ClientCartAdapter extends RecyclerView.Adapter<ClientCartAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return productList != null ? productList.size() : 0;
+        return itemList != null ? itemList.size() : 0;
     }
 
-    public void updateList(List<Product> nuevaLista) {
-        productList = nuevaLista;
+    public void updateList( List<CartItem> newList) {
+        itemList = newList;
         notifyDataSetChanged();
     }
 }

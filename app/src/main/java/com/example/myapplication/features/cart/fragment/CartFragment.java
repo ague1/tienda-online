@@ -8,29 +8,28 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.features.cart.CartViewModel;
+import com.example.myapplication.features.cart.model.CartItem;
 import com.example.myapplication.features.order.fragment.CheckoutFragment;
 import com.example.myapplication.R;
-import com.example.myapplication.features.cart.repository.CartRepository;
-import com.example.myapplication.features.product.model.Product;
 import com.example.myapplication.features.cart.adapter.ClientCartAdapter;
 
-import java.io.Serializable;
-
-import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Locale;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class CartFragment extends Fragment {
-    @Inject
-    CartRepository cartRepository;
     private RecyclerView recyclerCarrito;
     private ClientCartAdapter adapter;
     private TextView txtTotal;
     private Button buttonCheckout;
+    private CartViewModel viewModel;
 
     public CartFragment() {
         // Required empty constructor
@@ -42,56 +41,76 @@ public class CartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_car, container, false);
+        viewModel = new ViewModelProvider(this).get(CartViewModel.class);
 
         recyclerCarrito = view.findViewById(R.id.recyclerCarrito);
         txtTotal = view.findViewById(R.id.txtTotal);
         buttonCheckout = view.findViewById(R.id.btnPagar);
 
-        recyclerCarrito.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerCarrito.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        adapter = new ClientCartAdapter(cartRepository.getProducts());
+        adapter = new ClientCartAdapter( new ArrayList<>());
         recyclerCarrito.setAdapter(adapter);
 
-        adapter.setOnCartActionListener(new ClientCartAdapter.OnCartActionListener() {
-            @Override
-            public void onIncrease(Product product) {
-                cartRepository.increase(product);
-                adapter.notifyDataSetChanged();
-                updateTotal();
-            }
-            @Override
-            public void onDecrease(Product product) {
-                cartRepository.decrease(product);
-                adapter.notifyDataSetChanged();
-                updateTotal();
-            }
-        });
-
-        buttonCheckout.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("items_car", (Serializable) cartRepository.getProducts());
-
-            CheckoutFragment checkoutFragment = new CheckoutFragment();
-            checkoutFragment.setArguments(bundle);
-
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.frame_layout, checkoutFragment)
-                    .addToBackStack(null)
-                    .commit();
-        });
+        observeCart();
+        initCartActions();
+        initCheckout();
 
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        adapter.updateList(cartRepository.getProducts());
-        updateTotal();
+    private void observeCart() {
+        viewModel.getItems().observe(
+                getViewLifecycleOwner(),
+                items -> {
+
+                    adapter.updateList(items);
+                }
+        );
+
+        viewModel.getTotal().observe(
+                getViewLifecycleOwner(),
+                total -> {
+                    txtTotal.setText(String.format(
+                            Locale.getDefault(),
+                            "Total: $%.2f",
+                            total)
+                    );
+                }
+        );
     }
 
-    private void updateTotal() {
-        double total = cartRepository.getTotal();
-        txtTotal.setText(String.format("Total: $%.2f", total));
+    private void initCheckout() {
+
+        buttonCheckout.setOnClickListener(
+                v -> {
+
+                    CheckoutFragment checkoutFragment =
+                            new CheckoutFragment();
+
+                    getParentFragmentManager()
+                            .beginTransaction()
+                            .replace(
+                                    R.id.frame_layout,
+                                    checkoutFragment
+                            )
+                            .addToBackStack(null)
+                            .commit();
+                }
+        );
+    }
+
+    private void initCartActions() {adapter.setOnCartActionListener(
+            new ClientCartAdapter.OnCartActionListener() {
+
+                @Override
+                public void onIncrease(CartItem item) {
+                    viewModel.increase(item.getProductId());
+                }
+                @Override
+                public void onDecrease(CartItem item) {
+                    viewModel.decrease(item.getProductId());
+                }
+            });
     }
 }

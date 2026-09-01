@@ -1,21 +1,21 @@
 package com.example.myapplication.features.order.model;
 
-import com.example.myapplication.features.product.model.Product;
+import com.example.myapplication.features.cart.model.CartItem;
 
 public class OrderItem {
 
     private String id;
     private String nombre;
-    private int cantidad;
+    private int quantity;
     private double precio;
 
     public OrderItem() {}
 
-    public OrderItem(Product product) {
-        this.id = product.getId();
-        this.nombre = product.getNombre();
-        this.cantidad = product.getCantidad();
-        this.precio = product.getPrecio();
+    public OrderItem(CartItem cartItem) {
+        this.id = cartItem.getProductId();
+        this.nombre = cartItem.getNombre();
+        this.quantity = cartItem.getQuantity();
+        this.precio = cartItem.getPrecio();
     }
 
     public String getId() {
@@ -35,11 +35,11 @@ public class OrderItem {
     }
 
     public int getCantidad() {
-        return cantidad;
+        return quantity;
     }
 
     public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
+        this.quantity= cantidad;
     }
 
     public double getPrecio() {

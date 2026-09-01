@@ -10,14 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.features.product.model.Product;
+import com.example.myapplication.features.cart.model.CartItem;
 
 import java.util.List;
 
 public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.ViewHolder> {
-    private List<Product> list;
+    private List<CartItem> list;
 
-    public CheckoutAdapter(List<Product> list) {
+    public CheckoutAdapter(List<CartItem> list) {
         this.list = list;
     }
 
@@ -31,12 +31,12 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Product p = list.get(position);
-        double total = p.getPrecio() * p.getCantidad();
+        CartItem cartItem = list.get(position);
+        double total = cartItem.getPrecio() * cartItem.getQuantity();
 
 
-        holder.name.setText(p.getNombre());
-        holder.qty.setText("Qty: " + p.getCantidad());
+        holder.name.setText(cartItem.getNombre());
+        holder.qty.setText("Qty: " + cartItem.getQuantity());
         holder.price.setText("$" + String.format("%.2f", total));
     }
 
