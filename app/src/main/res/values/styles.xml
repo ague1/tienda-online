@@ -7,4 +7,29 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="CategoryImageShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+
+    <style name="ProductNormalPrice">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ProductOldPrice">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:textStyle">bold</item>
+
+    </style>
+
+    <style name="ProductSpecialPrice">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#E53935</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

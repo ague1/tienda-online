@@ -20,15 +20,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.features.auth.repository.AuthRepository;
-import com.example.myapplication.features.cart.repository.CartRepository;
+import com.example.myapplication.features.cart.model.CartItem;
+import com.example.myapplication.features.order.CheckoutViewModel;
 import com.example.myapplication.features.order.model.Order;
 import com.example.myapplication.features.order.model.OrderItem;
-import com.example.myapplication.features.order.usecase.CreateOrderUseCase;
-import com.example.myapplication.features.product.model.Product;
 import com.example.myapplication.features.order.adapter.CheckoutAdapter;
 import com.example.myapplication.features.profiles.model.Profile;
-import com.example.myapplication.features.profiles.usecase.UpdateProfileUseCase;
 import com.google.android.gms.tasks.Task;
 
 import java.text.DecimalFormat;
@@ -37,20 +34,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import javax.inject.Inject;
-
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class CheckoutFragment extends Fragment {
-    @Inject
-    CartRepository cartRepository;
-    @Inject
-    UpdateProfileUseCase updateProfileUseCase;
-    @Inject
-    AuthRepository auth;
-    @Inject
-    CreateOrderUseCase createOrderUseCase;
+
+    private CheckoutViewModel viewModel;
     private EditText inputName, inputEmail, inputPhone, inputAddress;
     private RadioGroup paymentGroup;
     private Button btnPlaceOrder;
@@ -82,13 +71,9 @@ public class CheckoutFragment extends Fragment {
             }
         });
 
-        if (!cartRepository.getProducts().isEmpty()) {
-            calculateTotal();
-        }
-
         RecyclerView recyclerCheckout = view.findViewById(R.id.recyclerCheckout);
-        recyclerCheckout.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerCheckout.setAdapter(new CheckoutAdapter(cartRepository.getProducts()));
+        recyclerCheckout.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerCheckout.setAdapter(new CheckoutAdapter(viewModel.getItems()));
 
     }
 
@@ -134,17 +119,19 @@ public class CheckoutFragment extends Fragment {
     private void createOrder() {
         Order order = buildOrder();
 // Guardar usando .document(orderId).set(order)
-        createOrderUseCase.execute(order).addOnSuccessListener(unused -> {
+        viewModel.createOrder(order).addOnSuccessListener(unused -> {
             updateProfile()
                     .addOnSuccessListener(v -> {
+                        if (!isAdded()) {return;}
                         Toast.makeText(requireContext(),
                                 "Order placed successfully!",
                                 Toast.LENGTH_LONG).show();
 
-                        cartRepository.clearCart();
+                        viewModel.clearCart();
                         navigateToOrders();
                     })
                     .addOnFailureListener(e -> {
+                        if (!isAdded()) {return;}
                         Toast.makeText(requireContext(),
                                 "Profile couldn't be updated",
                                 Toast.LENGTH_LONG).show();
@@ -157,7 +144,7 @@ public class CheckoutFragment extends Fragment {
     }
 
     private void calculateTotal() {
-        subtotal = cartRepository.getTotal();
+        subtotal = viewModel.getSubtotal();
         total = subtotal + delivery;
         Subtotal.setText("Subtotal: $" + df.format(subtotal));
         deliveryfree.setText("Delivery: $" + df.format(delivery));
@@ -179,7 +166,7 @@ public class CheckoutFragment extends Fragment {
         order.setTotal(total);
         order.setStatus("pending");
         order.setTimestamp(new Date());
-        order.setUserId(auth.getCurrentUserId());
+        order.setUserId(viewModel.getCurrentUserId());
         order.setItems(buildOrderItems());
 
         return order;
@@ -189,8 +176,8 @@ public class CheckoutFragment extends Fragment {
     private List<OrderItem> buildOrderItems() {
         List<OrderItem> items = new ArrayList<>();
 
-        for(Product product : cartRepository.getProducts()){
-            items.add(new OrderItem(product));
+        for(CartItem cartItem : viewModel.getItems()){
+            items.add(new OrderItem(cartItem));
         }
         return items;
     }
@@ -203,7 +190,7 @@ public class CheckoutFragment extends Fragment {
 
     private Profile buildProfile() {
         return new Profile(
-                auth.getCurrentUserId(),
+                viewModel.getCurrentUserId(),
                 inputName.getText().toString().trim(),
                 inputEmail.getText().toString().trim(),
                 inputPhone.getText().toString().trim(),
@@ -212,7 +199,7 @@ public class CheckoutFragment extends Fragment {
     }
 
     private Task<Void> updateProfile(){
-        return updateProfileUseCase.execute(buildProfile());
+        return viewModel.updateProfile(buildProfile());
 
     }
 

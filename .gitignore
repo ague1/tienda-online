@@ -22,3 +22,4 @@ backend-OTP/node_modules/
 
 backend-OTP/config
 backend-OTP/.env
+functions/node_modules/

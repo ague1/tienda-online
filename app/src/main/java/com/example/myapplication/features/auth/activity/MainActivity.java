@@ -7,7 +7,7 @@ import com.example.myapplication.features.auth.usecase.AuthUseCase;
 import com.example.myapplication.features.order.fragment.ClientOrderStatusFragment;
 import com.example.myapplication.features.profiles.fragment.AccountFragment;
 import com.example.myapplication.features.cart.fragment.CartFragment;
-import com.example.myapplication.features.client.fragment.ClientHomeFragment;
+import com.example.myapplication.features.product.presentation.home.ClientHomeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;

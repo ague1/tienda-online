@@ -1,62 +1,27 @@
 package com.example.myapplication.features.cart.repository;
 
-import com.example.myapplication.features.cart.model.Cart;
-import com.example.myapplication.features.product.model.Product;
+import com.example.myapplication.features.cart.model.CartItem;
+import com.example.myapplication.features.product.domain.model.Product;
 import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 
-@Singleton
-public class CartRepository {
+public interface CartRepository {
 
+    List<CartItem> getItems();
 
-    private final Cart cart;
+    void addProduct(Product product, double price);
+    void removeProduct(String productId);
 
-    @Inject
-    public CartRepository(Cart cart){
-        this.cart = cart;
-    }
+    void clearCart();
 
+    double getTotal();
 
+    void increase(String productId);
 
-    public List<Product> getProducts(){
-        return cart.getProducts();
-    }
+    void decrease(String productId);
 
-
-    public void addProduct(Product product){
-        cart.addProduct(product);
-    }
-
-
-    public void updateProduct(Product product){
-        cart.updateProduct(product);
-    }
-
-
-    public void removeProduct(Product product){
-        cart.removeProduct(product);
-    }
-
-
-    public void clearCart(){
-        cart.clear();
-    }
-
-
-    public double getTotal(){
-        return cart.getTotal();
-    }
-
-
-    public void increase(Product product){
-        cart.increase(product);
-    }
-
-
-    public void decrease(Product product){
-        cart.decrease(product);
-    }
-
+    void setQuantity(
+            String productId,
+            int quantity
+    );
 }

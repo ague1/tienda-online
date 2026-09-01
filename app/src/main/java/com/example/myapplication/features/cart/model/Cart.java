@@ -1,6 +1,6 @@
 package com.example.myapplication.features.cart.model;
 
-import com.example.myapplication.features.product.model.Product;
+import com.example.myapplication.features.product.domain.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,71 +8,132 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class Cart {
-    private final List<Product> products;
+    private  final List<CartItem> items;
     @Inject
     public Cart() {
-        products = new ArrayList<>();
+        items = new ArrayList<>();
     }
 
 
-    public List<Product> getProducts(){
+    public List<CartItem> getItems(){
 
-        return new ArrayList<>(products);
+        return new ArrayList<>(items);
     }
 
-    public void addProduct(Product product) {
 
-        // Si por algún motivo llega null el id, asignamos uno seguro
-        products.add(product);
+    public void addProduct(
+            Product product,
+            double price
+    ) {
+
+        if (product == null || product.getId() == null) {
+            return;
+        }
+
+        for (CartItem item : items) {
+
+            if (product.getId().equals(item.getProductId())) {
+
+                item.setQuantity(
+                        item.getQuantity() + 1
+                );
+
+                return;
+            }
+        }
+
+        CartItem item = new CartItem(
+                product.getId(),
+                product.getNombre(),
+                product.getImage(),
+                price,
+                1
+        );
+
+        items.add(item);
     }
 
-    public void updateProduct(Product product) {
+    public void setQuantity(String productId, int quantity) {
+
+        if (productId == null) {
+            return;
+        }
+
+        for (CartItem item : items) {
+
+            if (productId.equals(item.getProductId())) {
+
+                if (quantity <= 0) {
+                    items.remove(item);
+                } else {
+                    item.setQuantity(quantity);
+                }
+
+                return;
+            }
+        }
+    }
+
+
+   /* public void updateProduct(Product product) {
         for (Product p : products) {
             if (p.getId().equals(product.getId())) {
                 p.setCantidad(product.getCantidad());
                 return;
             }
         }
+    }*/
+
+    public void increase(String productId) {
+        if (productId == null) {return;}
+
+        for (CartItem item : items) {
+
+            if (productId.equals(item.getProductId())) {
+
+                item.setQuantity(item.getQuantity() + 1);
+                return;
+            }
+        }
     }
 
-    public void removeProduct(Product product) {
-        products.remove(product);
+    public void decrease(String productId) {
+
+        if (productId == null) {return;}
+
+        for (CartItem item : items) {
+
+            if (productId.equals(item.getProductId())) {
+
+                if (item.getQuantity() <= 1) {items.remove(item);
+                } else {
+                    item.setQuantity(item.getQuantity() - 1);
+                }
+
+                return;
+            }
+        }
+    }
+    public void removeProduct(String productId) {
+        if (productId == null) {return;}
+
+        items.removeIf(item -> productId.equals(item.getProductId()));
     }
 
     public void clear() {
-        products.clear();
+        items.clear();
     }
 
     public double getTotal() {
-
         double total = 0;
 
-        for (Product product : products) {
-            total += product.getPrecio() * product.getCantidad();
+        for (CartItem item : items) {
+
+            total +=
+                    item.getPrecio()
+                            * item.getQuantity();
         }
 
         return total;
-    }
-
-    public void increase(Product product) {
-
-
-        product.setCantidad(
-                product.getCantidad() + 1
-        );
-    }
-
-    public void decrease(Product product) {
-        if(product.getCantidad() > 1){
-
-            product.setCantidad(
-                    product.getCantidad() - 1
-            );
-
-        }else{
-
-            products.remove(product);
-
-        }
     }
 }
