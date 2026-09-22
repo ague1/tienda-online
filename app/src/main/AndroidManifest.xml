@@ -18,26 +18,26 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
-            android:name=".features.auth.activity.OtpActivity"
+            android:name=".features.auth.presentation.activity.OtpActivity"
             android:exported="false" />
         <activity
-            android:name=".features.order.activity.OrderProcessActivity"
+            android:name=".features.order.presentation.activity.OrderProcessActivity"
             android:exported="false" />
         <activity
-            android:name=".features.auth.activity.ForgotPasswordActivity"
+            android:name=".features.auth.presentation.activity.ForgotPasswordActivity"
             android:exported="false" />
 
         <activity
-            android:name=".features.auth.activity.ResetPasswordActivity"
+            android:name=".features.auth.presentation.activity.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".features.auth.activity.SignupActivity"
+            android:name=".features.auth.presentation.activity.SignupActivity"
             android:exported="false" />
         <activity
-            android:name=".features.auth.activity.LoginActivity"
+            android:name=".features.auth.presentation.activity.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".features.auth.activity.MainActivity"
+            android:name=".features.main.presentation.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>

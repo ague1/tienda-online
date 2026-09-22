@@ -8,8 +8,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,18 +16,23 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapplication.R;
-import com.example.myapplication.features.cart.CartViewModel;
+import com.example.myapplication.core.scheduler.DebounceScheduler;
+import com.example.myapplication.features.cart.presentation.viewmodel.CartViewModel;
+import com.example.myapplication.features.product.domain.model.PricedProduct;
+import com.example.myapplication.features.product.domain.model.Category;
+import com.example.myapplication.features.product.domain.model.PromotionProduct;
 import com.example.myapplication.features.product.presentation.home.adapter.CategoryAdapter;
-import com.example.myapplication.features.cart.OnCartClickListener;
+import com.example.myapplication.features.cart.presentation.listener.OnCartClickListener;
 import com.example.myapplication.features.product.presentation.home.adapter.PromotionAdapter;
 import com.example.myapplication.features.product.presentation.promotion.PromotionViewModel;
 import com.example.myapplication.features.product.domain.model.Product;
 import com.example.myapplication.features.product.presentation.home.adapter.ClientProductsAdapter;
-import com.example.myapplication.features.product.application.usecase.GetCategoriesUseCase;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,9 +40,6 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class ClientHomeFragment extends Fragment {
-
-    @Inject
-    GetCategoriesUseCase getCategoriesUseCase;
     private RecyclerView recyclerView;
     private RecyclerView recyclerViewAllProducts;
     private RecyclerView recyclerCategories;
@@ -57,10 +57,12 @@ public class ClientHomeFragment extends Fragment {
     private LinearLayout layoutPromotions;
     private TextView txtLookProducts;
 
-    private final List<Product> allProducts = new ArrayList<>();
+    private List<Product> allProducts = Collections.emptyList();
 
-    private final Handler searchHandler =
-            new Handler(Looper.getMainLooper());
+
+    @Inject
+    DebounceScheduler debounceScheduler;
+
 
     private Runnable searchRunnable;
 
@@ -99,8 +101,8 @@ public class ClientHomeFragment extends Fragment {
         observeSearchProducts();
         observePromotions();
         observeCategoryProducts();
+        observeCategories();
         observeCart();
-
 
         loadProducts();
         loadPromotions();
@@ -112,36 +114,55 @@ public class ClientHomeFragment extends Fragment {
 
 
     private void observeProducts() {
-
-        viewModel.getProducts().observe(
+        viewModel.getProductsState().observe(
                 getViewLifecycleOwner(),
-                products -> {
+                state -> {
 
-                    allProducts.clear();
-                    allProducts.addAll(products);
+                    if (state == null) return;
 
-                    String query =
-                            search.getText()
-                                    .toString()
-                                    .trim();
+                    switch (state.getStatus()) {
 
-                    // Si estamos buscando, no tocar la lista
-                    if (!query.isEmpty()) {
-                        return;
+                        case LOADING:
+                            // Opcional: mostrar indicador de carga.
+                            break;
+
+                        case SUCCESS:
+
+                            List<Product> products = state.getData();
+
+                            allProducts = products != null
+                                    ? products
+                                    : Collections.emptyList();
+
+                            String query =
+                                    search.getText()
+                                            .toString()
+                                            .trim();
+
+                            if (!query.isEmpty()) return;
+
+                            if (!viewModel.getCurrentCategory().isEmpty()) {
+                                return;
+                            }
+
+                            titulo.setText(
+                                    R.string.title_today_specials
+                            );
+
+                            favoriteAdapter.submitList(allProducts);
+                            break;
+
+                        case ERROR:
+                            Toast.makeText(
+                                    requireContext(),
+                                    "No se pudieron cargar los productos",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            break;
+
+                        case IDLE:
+                            break;
                     }
-
-                    // Si estamos viendo una categoría,
-                    // tampoco tocar la lista
-                    if (!viewModel.getCurrentCategory().isEmpty()) {
-                        return;
-                    }
-
-                    titulo.setText(R.string.title_today_specials);
-
-                    favoriteAdapter.submitList(
-                            new ArrayList<>(allProducts)
-                    );
-
                 }
         );
     }
@@ -274,104 +295,147 @@ public class ClientHomeFragment extends Fragment {
     }
 
     private void initAdapters() {
+
         OnCartClickListener cartClickListener =
                 new OnCartClickListener() {
 
                     @Override
                     public void onAdd(
-                            Product product,
-                            double price
+                            PricedProduct pricedProduct
                     ) {
 
-                        if (product == null
-                                || product.getId() == null) {
+                        if (pricedProduct == null
+                                || pricedProduct.getProduct() == null
+                                || pricedProduct.getProduct().getId() == null) {
                             return;
                         }
 
                         cartViewModel.addProduct(
-                                product,
-                                price
+                                pricedProduct
                         );
                     }
 
                     @Override
-                    public void onIncrease(Product product) {
+                    public void onIncrease(
+                            PricedProduct pricedProduct
+                    ) {
 
-                        if (product == null
-                                || product.getId() == null) {
+                        if (pricedProduct == null
+                                || pricedProduct.getProduct() == null
+                                || pricedProduct.getProduct().getId() == null) {
                             return;
                         }
 
                         cartViewModel.increase(
-                                product.getId()
+                                pricedProduct.getProduct().getId()
                         );
                     }
 
                     @Override
-                    public void onDecrease(Product product) {
+                    public void onDecrease(
+                            PricedProduct pricedProduct
+                    ) {
 
-                        if (product == null
-                                || product.getId() == null) {
+                        if (pricedProduct == null
+                                || pricedProduct.getProduct() == null
+                                || pricedProduct.getProduct().getId() == null) {
                             return;
                         }
 
                         cartViewModel.decrease(
-                                product.getId()
+                                pricedProduct.getProduct().getId()
                         );
                     }
                 };
 
-        favoriteAdapter = new ClientProductsAdapter(
-                cartClickListener
+        favoriteAdapter =
+                new ClientProductsAdapter(
+                        cartClickListener
+                );
+
+        promotionAdapter =
+                new PromotionAdapter(
+                        cartClickListener
+                );
+
+        categoryAdapter =
+                new CategoryAdapter(
+                        new ArrayList<>(),
+                        category -> {
+
+                            cancelPendingSearch();
+                            search.setText("");
+                            layoutPromotions.setVisibility(
+                                    View.GONE
+                            );
+
+                            txtLookProducts.setVisibility(
+                                    View.GONE
+                            );
+
+                            viewModel.clearSearch();
+                            viewModel.loadProductsByCategory(
+                                    category.getName()
+                            );
+                        }
+                );
+
+        recyclerView.setAdapter(
+                promotionAdapter
         );
 
-        promotionAdapter = new PromotionAdapter(
-                cartClickListener
+        recyclerViewAllProducts.setAdapter(
+                favoriteAdapter
         );
 
-        categoryAdapter = new CategoryAdapter(
-                new ArrayList<>(),
-                category -> {
-
-                    layoutPromotions.setVisibility(
-                            View.GONE
-                    );
-
-                    txtLookProducts.setVisibility(
-                            View.GONE
-                    );
-
-                    viewModel.loadProductsByCategory(
-                            category.getName()
-                    );
-                }
+        recyclerCategories.setAdapter(
+                categoryAdapter
         );
-
-        recyclerView.setAdapter(promotionAdapter);
-        recyclerViewAllProducts.setAdapter(favoriteAdapter);
-        recyclerCategories.setAdapter(categoryAdapter);
     }
+
+
 
     private void observeCategoryProducts() {
 
-        viewModel.getCategoryProducts().observe(
+        viewModel.getCategoryProductsState().observe(
                 getViewLifecycleOwner(),
-                products -> {
+                state -> {
 
-                    if (products == null) {
-                        return;
+                    if (state == null) return;
+
+                    switch (state.getStatus()) {
+
+                        case SUCCESS:
+
+                            if (viewModel.getCurrentCategory().isEmpty()) {
+                                return;
+                            }
+
+                            List<Product> products = state.getData();
+
+                            titulo.setText(
+                                    viewModel.getCurrentCategory()
+                            );
+
+                            favoriteAdapter.submitList(
+                                    products != null
+                                            ? products
+                                            : Collections.emptyList()
+                            );
+                            break;
+
+                        case ERROR:
+                            Toast.makeText(
+                                    requireContext(),
+                                    "No se pudieron cargar los productos de la categoría",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            break;
+
+                        case LOADING:
+                        case IDLE:
+                            break;
                     }
-
-                    String category =
-                            viewModel.getCurrentCategory();
-
-                    if (category.isEmpty()) {
-                        return;
-                    }
-
-                    titulo.setText(category);
-
-                    favoriteAdapter.submitList(products);
                 }
         );
     }
@@ -401,9 +465,8 @@ public class ClientHomeFragment extends Fragment {
 
                 // Cancelar búsqueda pendiente
                 if (searchRunnable != null) {
-                    searchHandler.removeCallbacks(
-                            searchRunnable
-                    );
+                    debounceScheduler.removeCallbacks(searchRunnable);
+
                 }
 
                 if (query.isEmpty()) {
@@ -427,9 +490,12 @@ public class ClientHomeFragment extends Fragment {
 
                 titulo.setText(R.string.title_search_result);
 
-                searchRunnable = () -> viewModel.search(query);
+                searchRunnable = () -> {
+                    searchRunnable = null;
+                    viewModel.search(query);
+                };
 
-                searchHandler.postDelayed(
+                debounceScheduler.postDelayed(
                         searchRunnable,
                         350
                 );
@@ -451,11 +517,7 @@ public class ClientHomeFragment extends Fragment {
     }
 
     private void loadCategories() {
-
-        getCategoriesUseCase.execute()
-                .addOnSuccessListener(categories ->
-                        categoryAdapter.updateList(categories)
-                );
+        viewModel.loadCategories();
     }
 
 
@@ -474,23 +536,59 @@ public class ClientHomeFragment extends Fragment {
     private void observePromotions() {
 
         promotionViewModel
-                .getPromotions()
+                .getPromotionsState()
                 .observe(
                         getViewLifecycleOwner(),
-                        promotions -> {
+                        state -> {
 
-                            if (promotions == null) {
+                            if (state == null) {
                                 return;
                             }
 
-                            promotionAdapter.submitList(promotions);
+                            switch (state.getStatus()) {
 
-                            favoriteAdapter.updatePromotions(
-                                    promotions
-                            );
+                                case SUCCESS:
+
+                                    List<PromotionProduct> promotions =
+                                            state.getData();
+
+                                    if (promotions == null) {
+                                        promotions =
+                                                Collections.emptyList();
+                                    }
+
+                                    promotionAdapter.submitList(
+                                            promotions
+                                    );
+
+                                    favoriteAdapter.updatePromotions(
+                                            promotions
+                                    );
+
+                                    updateCartPrices(
+                                            promotions
+                                    );
+
+                                    break;
+
+                                case ERROR:
+
+                                    Toast.makeText(
+                                            requireContext(),
+                                            "No se pudieron cargar las promociones",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+
+                                    break;
+
+                                case LOADING:
+                                case IDLE:
+                                    break;
+                            }
                         }
                 );
     }
+
 
     private void loadPromotions() {
         promotionViewModel.loadFirstPage();
@@ -498,20 +596,44 @@ public class ClientHomeFragment extends Fragment {
 
     private void observeSearchProducts() {
 
-        viewModel.getSearchProducts().observe(
+        viewModel.getSearchProductsState().observe(
                 getViewLifecycleOwner(),
-                products -> {
+                state -> {
 
-                    String query =
-                            search.getText()
-                                    .toString()
-                                    .trim();
+                    if (state == null) return;
 
-                    if (query.isEmpty()) {
-                        return;
+                    switch (state.getStatus()) {
+
+                        case SUCCESS:
+
+                            String query =
+                                    search.getText()
+                                            .toString()
+                                            .trim();
+
+                            if (query.isEmpty()) return;
+
+                            List<Product> products = state.getData();
+
+                            favoriteAdapter.submitList(
+                                    products != null
+                                            ? products
+                                            : Collections.emptyList()
+                            );
+                            break;
+
+                        case ERROR:
+                            Toast.makeText(
+                                    requireContext(),
+                                    "No se pudieron buscar los productos",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            break;
+
+                        case LOADING:
+                        case IDLE:
+                            break;
                     }
-
-                    favoriteAdapter.submitList(products);
                 }
         );
     }
@@ -520,11 +642,95 @@ public class ClientHomeFragment extends Fragment {
     public void onDestroyView() {
 
         if (searchRunnable != null) {
-            searchHandler.removeCallbacks(searchRunnable);
+            debounceScheduler.removeCallbacks(searchRunnable);
             searchRunnable = null;
         }
 
         super.onDestroyView();
+    }
+
+    private void updateCartPrices(
+            List<PromotionProduct> promotions
+    ) {
+
+        if (promotions == null) {
+            return;
+        }
+
+        for (PromotionProduct promotion : promotions) {
+
+            if (promotion == null ||
+                    promotion.getProduct() == null) {
+                continue;
+            }
+
+            String productId =
+                    promotion.getProduct().getId();
+
+            if (productId == null ||
+                    productId.trim().isEmpty()) {
+                continue;
+            }
+
+            long specialPrice =
+                    promotion.getSpecialPrice();
+
+            cartViewModel.updateProductPrice(
+                    productId,
+                    specialPrice
+            );
+        }
+    }
+
+    private void cancelPendingSearch() {
+
+        if (searchRunnable != null) {
+            debounceScheduler.removeCallbacks(searchRunnable);
+            searchRunnable = null;
+        }
+    }
+
+    private void observeCategories() {
+
+        viewModel.getCategoriesState().observe(
+                getViewLifecycleOwner(),
+                state -> {
+
+                    if (state == null) {
+                        return;
+                    }
+
+                    switch (state.getStatus()) {
+
+                        case SUCCESS:
+
+                            List<Category> categories =
+                                    state.getData();
+
+                            categoryAdapter.updateList(
+                                    categories != null
+                                            ? categories
+                                            : Collections.emptyList()
+                            );
+
+                            break;
+
+                        case ERROR:
+
+                            Toast.makeText(
+                                    requireContext(),
+                                    "No se pudieron cargar las categorías",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                            break;
+
+                        case LOADING:
+                        case IDLE:
+                            break;
+                    }
+                }
+        );
     }
 
 }

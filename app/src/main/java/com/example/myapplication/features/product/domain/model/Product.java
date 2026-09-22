@@ -8,7 +8,7 @@ public class Product {
         private final String descripcion;
         private final String categoria;
 
-        private final double precio;
+        private final long precio;
         private final int stock;
         private final int totalSold;
 
@@ -19,7 +19,7 @@ public class Product {
                 String nombre,
                 String descripcion,
                 String categoria,
-                double precio,
+                long precio,
                 int stock,
                 int totalSold,
                 String image
@@ -52,7 +52,7 @@ public class Product {
                 return categoria;
         }
 
-        public double getPrecio() {
+        public long getPrecio() {
                 return precio;
         }
         public int getStock() {

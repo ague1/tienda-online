@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.myapplication.core.ui.UiState;
 import com.example.myapplication.features.product.domain.model.PromotionProduct;
 import com.example.myapplication.features.product.application.usecase.GetPromotionUseCase;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -20,13 +21,11 @@ public class PromotionViewModel extends ViewModel {
 
     private final GetPromotionUseCase getPromotionUseCase;
 
-    private final MutableLiveData<List<PromotionProduct>> promotions =
-            new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<UiState<List<PromotionProduct>>> promotionsState =
+            new MutableLiveData<>(UiState.idle());
 
     private DocumentSnapshot lastDocument;
-
     private boolean loading = false;
-
     private boolean hasMore = true;
 
     @Inject
@@ -36,8 +35,8 @@ public class PromotionViewModel extends ViewModel {
         this.getPromotionUseCase = getPromotionUseCase;
     }
 
-    public LiveData<List<PromotionProduct>> getPromotions() {
-        return promotions;
+    public LiveData<UiState<List<PromotionProduct>>> getPromotionsState() {
+        return promotionsState;
     }
 
     public void loadFirstPage() {
@@ -47,40 +46,43 @@ public class PromotionViewModel extends ViewModel {
         }
 
         loading = true;
-
-        // Reiniciar completamente la paginación
         lastDocument = null;
         hasMore = true;
+
+        promotionsState.setValue(
+                UiState.loading()
+        );
 
         getPromotionUseCase
                 .getFirstPage()
                 .addOnSuccessListener(page -> {
 
-                    lastDocument =
-                            page.getLastDocument();
+                    List<PromotionProduct> promotions =
+                            new ArrayList<>(page.getPromotions());
 
-                    hasMore =
-                            page.hasMore();
-
-                    promotions.setValue(
-                            new ArrayList<>(
-                                    page.getPromotions()
-                            )
+                    promotionsState.setValue(
+                            UiState.success(promotions)
                     );
 
+                    lastDocument = page.getLastDocument();
+                    hasMore = page.hasMore();
                     loading = false;
                 })
-                .addOnFailureListener(e ->
+                .addOnFailureListener(e -> {
 
-                    loading = false);
+                    loading = false;
+
+                    promotionsState.setValue(
+                            UiState.error("PROMOTIONS_LOAD_ERROR")
+                    );
+                });
     }
 
     public void loadNextPage() {
 
-        if (loading ||
-                lastDocument == null ||
-                !hasMore) {
-
+        if (loading
+                || lastDocument == null
+                || !hasMore) {
             return;
         }
 
@@ -91,24 +93,34 @@ public class PromotionViewModel extends ViewModel {
                 .addOnSuccessListener(page -> {
 
                     List<PromotionProduct> current =
-                            promotions.getValue();
+                            promotionsState.getValue() != null
+                                    ? promotionsState
+                                    .getValue()
+                                    .getData()
+                                    : null;
+
+                    List<PromotionProduct> updated;
 
                     if (current == null) {
-                        current = new ArrayList<>();
+                        updated = new ArrayList<>();
                     } else {
-                        current = new ArrayList<>(current);
+                        updated = new ArrayList<>(current);
                     }
 
-                    current.addAll(
-                            page.getPromotions()
+                    updated.addAll(page.getPromotions());
+
+                    promotionsState.setValue(
+                            UiState.success(updated)
                     );
 
-                    promotions.setValue(current);
                     lastDocument = page.getLastDocument();
                     hasMore = page.hasMore();
                     loading = false;
                 })
-                .addOnFailureListener(e -> loading = false);
+                .addOnFailureListener(e -> {
+
+                    loading = false;
+
+                });
     }
 }
-

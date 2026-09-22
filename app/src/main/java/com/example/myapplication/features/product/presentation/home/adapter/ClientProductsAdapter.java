@@ -16,10 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.myapplication.R;
-import com.example.myapplication.features.cart.model.CartItem;
+import com.example.myapplication.features.cart.domain.model.CartItem;
+import com.example.myapplication.features.product.domain.model.PricedProduct;
 import com.example.myapplication.features.product.domain.model.PromotionProduct;
 import com.example.myapplication.features.product.domain.model.Product;
-import com.example.myapplication.features.cart.OnCartClickListener;
+import com.example.myapplication.features.cart.presentation.listener.OnCartClickListener;
 
 
 import java.util.Collections;
@@ -40,7 +41,7 @@ public class ClientProductsAdapter
     private final Map<String, Integer> cartQuantities =
             new HashMap<>();
 
-    private final Map<String, Double> specialPrices =
+    private final Map<String, Long> specialPrices =
             new HashMap<>();
 
     public ClientProductsAdapter(
@@ -77,10 +78,8 @@ public class ClientProductsAdapter
                             oldItem.getDescripcion(),
                             newItem.getDescripcion()
                     )
-                            && Double.compare(
-                            oldItem.getPrecio(),
-                            newItem.getPrecio()
-                    ) == 0
+                            && oldItem.getPrecio()
+                            == newItem.getPrecio()
                             && Objects.equals(
                             oldItem.getImage(),
                             newItem.getImage()
@@ -156,7 +155,7 @@ public class ClientProductsAdapter
                 product.getDescripcion()
         );
 
-        Double specialPrice =
+        Long specialPrice =
                 specialPrices.get(product.getId());
 
         if (specialPrice != null) {
@@ -164,12 +163,9 @@ public class ClientProductsAdapter
             holder.textNormalPrice.setVisibility(View.GONE);
 
             holder.textSpecialPrice.setText(
-                    String.format(
-                            Locale.getDefault(),
-                            "$%.2f",
-                            specialPrice
-                    )
+                    "$" + formatMoney(specialPrice)
             );
+
 
             holder.textSpecialPrice.setVisibility(
                     View.VISIBLE
@@ -178,12 +174,9 @@ public class ClientProductsAdapter
         } else {
 
             holder.textNormalPrice.setText(
-                    String.format(
-                            Locale.getDefault(),
-                            "$%.2f",
-                            product.getPrecio()
-                    )
+                    "$" + formatMoney(product.getPrecio())
             );
+
 
             holder.textNormalPrice.setVisibility(
                     View.VISIBLE
@@ -217,17 +210,45 @@ public class ClientProductsAdapter
                 return;
             }
 
-            double effectivePrice =
+            long price =
                     specialPrice != null
                             ? specialPrice
                             : product.getPrecio();
 
+            PricedProduct pricedProduct =
+                    new PricedProduct(
+                            product,
+                            price
+                    );
+
             cartClickListener.onAdd(
-                    product,
-                    effectivePrice
+                    pricedProduct
             );
         });
 
+
+// DISMINUIR
+        holder.buttonLess.setOnClickListener(v -> {
+
+            if (product.getId() == null) {
+                return;
+            }
+
+            long price =
+                    specialPrice != null
+                            ? specialPrice
+                            : product.getPrecio();
+
+            PricedProduct pricedProduct =
+                    new PricedProduct(
+                            product,
+                            price
+                    );
+
+            cartClickListener.onDecrease(
+                    pricedProduct
+            );
+        });
 
         holder.buttonMore.setOnClickListener(v -> {
 
@@ -235,17 +256,23 @@ public class ClientProductsAdapter
                 return;
             }
 
-            cartClickListener.onIncrease(product);
+            long price =
+                    specialPrice != null
+                            ? specialPrice
+                            : product.getPrecio();
+
+            PricedProduct pricedProduct =
+                    new PricedProduct(
+                            product,
+                            price
+                    );
+
+            cartClickListener.onIncrease(
+                    pricedProduct
+            );
         });
 
-        holder.buttonLess.setOnClickListener(v -> {
 
-            if (product.getId() == null) {
-                return;
-            }
-
-            cartClickListener.onDecrease(product);
-        });
 
         holder.itemView.setOnClickListener(v ->
 
@@ -277,7 +304,7 @@ public class ClientProductsAdapter
             List<PromotionProduct> promotions
     ) {
 
-        Map<String, Double> newPrices =
+        Map<String, Long> newPrices =
                 buildSpecialPrices(promotions);
 
         Set<String> affectedIds =
@@ -302,11 +329,11 @@ public class ClientProductsAdapter
         }
     }
 
-    private Map<String, Double> buildSpecialPrices(
+    private Map<String, Long> buildSpecialPrices(
             List<PromotionProduct> promotions
     ) {
 
-        Map<String, Double> newPrices =
+        Map<String, Long> newPrices =
                 new HashMap<>();
 
         if (promotions == null) {
@@ -438,5 +465,15 @@ public class ClientProductsAdapter
             }
         }
     }
+
+    private String formatMoney(long cents) {
+
+        return String.format(
+                Locale.getDefault(),
+                "%.2f",
+                cents / 100.0
+        );
+    }
+
 
 }

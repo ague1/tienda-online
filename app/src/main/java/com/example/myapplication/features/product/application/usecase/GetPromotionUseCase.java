@@ -1,7 +1,7 @@
 package com.example.myapplication.features.product.application.usecase;
 
 import com.example.myapplication.features.product.domain.model.PromotionPage;
-import com.example.myapplication.features.product.data.repository.PromotionRepository;
+import com.example.myapplication.features.product.domain.port.repository.PromotionRepository;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 

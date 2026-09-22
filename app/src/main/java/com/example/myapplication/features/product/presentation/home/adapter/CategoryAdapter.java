@@ -97,9 +97,7 @@ public class CategoryAdapter
         return categoryList.size();
     }
 
-    public void updateList(
-            List<Category> newList
-    ) {
+    public void updateList(List<Category> newList) {
 
         categoryList.clear();
 
@@ -107,9 +105,7 @@ public class CategoryAdapter
             categoryList.addAll(newList);
         }
 
-        notifyItemRangeChanged(
-                0,
-                categoryList.size()
-        );
+        notifyDataSetChanged();
     }
+
 }
