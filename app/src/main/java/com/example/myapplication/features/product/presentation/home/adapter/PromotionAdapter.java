@@ -15,12 +15,14 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.myapplication.R;
-import com.example.myapplication.features.cart.model.CartItem;
+import com.example.myapplication.features.cart.domain.model.CartItem;
+import com.example.myapplication.features.product.domain.model.PricedProduct;
 import com.example.myapplication.features.product.domain.model.PromotionProduct;
-import com.example.myapplication.features.cart.OnCartClickListener;
+import com.example.myapplication.features.cart.presentation.listener.OnCartClickListener;
 import com.example.myapplication.features.product.domain.model.Product;
-import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.List;
@@ -79,14 +81,10 @@ public class PromotionAdapter
                             oldProduct.getDescripcion(),
                             newProduct.getDescripcion()
                     )
-                            && Double.compare(
-                            oldProduct.getPrecio(),
-                            newProduct.getPrecio()
-                    ) == 0
-                            && Double.compare(
-                            oldItem.getSpecialPrice(),
-                            newItem.getSpecialPrice()
-                    ) == 0
+                            && oldProduct.getPrecio()
+                            == newProduct.getPrecio()
+                            && oldItem.getSpecialPrice()
+                            == newItem.getSpecialPrice()
                             && Objects.equals(
                             oldProduct.getImage(),
                             newProduct.getImage()
@@ -196,11 +194,28 @@ public class PromotionAdapter
         PromotionProduct promotionProduct =
                 getItem(position);
 
+        if (promotionProduct == null ||
+                promotionProduct.getProduct() == null) {
+            return;
+        }
+
         Product product =
                 promotionProduct.getProduct();
 
-        double specialPrice =
+        String productId =
+                product.getId();
+
+        if (productId == null ||
+                productId.trim().isEmpty()) {
+            return;
+        }
+
+        long specialPrice =
                 promotionProduct.getSpecialPrice();
+
+// -------------------------
+// DATOS
+// -------------------------
 
         holder.nameProduct.setText(
                 product.getNombre()
@@ -210,11 +225,9 @@ public class PromotionAdapter
                 product.getDescripcion()
         );
 
-        // Precio normal
+// Precio normal
         holder.texNormalPrice.setText(
-                String.format(
-                        Locale.getDefault(),
-                        "$%.2f",
+                "$" + formatMoney(
                         product.getPrecio()
                 )
         );
@@ -228,37 +241,48 @@ public class PromotionAdapter
                 View.VISIBLE
         );
 
-
-
+// Precio especial
         holder.textSpecialPrice.setText(
-                String.format(
-                        Locale.getDefault(),
-                        "$%.2f",
-                        promotionProduct.getSpecialPrice()
+                "$" + formatMoney(
+                        specialPrice
                 )
         );
 
-        holder.textSpecialPrice.setVisibility(View.VISIBLE);
+        holder.textSpecialPrice.setVisibility(
+                View.VISIBLE
+        );
 
-        Picasso.get()
+// -------------------------
+// IMAGEN
+// -------------------------
+
+        Glide.with(
+                        holder.imageProduct.getContext()
+                )
+                .clear(holder.imageProduct);
+
+        Glide.with(
+                        holder.imageProduct.getContext()
+                )
                 .load(product.getImage())
                 .placeholder(
-                        R.drawable.ic_launcher_foreground
+                        R.drawable.ic_product_placeholder
                 )
                 .error(
-                        R.drawable.ic_launcher_foreground
+                        R.drawable.ic_product_placeholder
                 )
-                .resizeDimen(
-                        R.dimen.product_image_width,
-                        R.dimen.product_image_height
+                .diskCacheStrategy(
+                        DiskCacheStrategy.AUTOMATIC
                 )
                 .centerCrop()
                 .into(holder.imageProduct);
 
+// -------------------------
+// CARRITO
+// -------------------------
+
         int cartQuantity =
-                getCartQuantity(
-                        product.getId()
-                );
+                getCartQuantity(productId);
 
         updateQuantityView(
                 holder,
@@ -268,47 +292,55 @@ public class PromotionAdapter
 
         holder.addCart.setOnClickListener(v -> {
 
-            if (product.getId() == null) {
-                return;
-            }
+            PricedProduct pricedProduct =
+                    new PricedProduct(
+                            product,
+                            specialPrice
+                    );
 
             cartClickListener.onAdd(
-                    product,
-                    specialPrice
+                    pricedProduct
             );
         });
 
         holder.buttonMore.setOnClickListener(v -> {
 
-            if (product.getId() == null) {
-                return;
-            }
+            PricedProduct pricedProduct =
+                    new PricedProduct(
+                            product,
+                            specialPrice
+                    );
 
             cartClickListener.onIncrease(
-                    product
+                    pricedProduct
             );
         });
+
 
         holder.buttonLess.setOnClickListener(v -> {
 
-            if (product.getId() == null) {
-                return;
-            }
+            PricedProduct pricedProduct =
+                    new PricedProduct(
+                            product,
+                            specialPrice
+                    );
 
             cartClickListener.onDecrease(
-                    product
+                    pricedProduct
             );
         });
 
-        holder.itemView.setOnClickListener(v ->
+
+        holder.itemView.setOnClickListener(v -> {
 
             Toast.makeText(
                     v.getContext(),
                     "Seleccionaste: "
                             + product.getNombre(),
                     Toast.LENGTH_SHORT
-            ).show()
-        );
+            ).show();
+        });
+
     }
 
     private int getCartQuantity(
@@ -420,6 +452,12 @@ public class PromotionAdapter
             }
         }
     }
+    private String formatMoney(long cents) {
 
+        return String.format(
+                Locale.getDefault(),
+                "%.2f",
+                cents / 100.0
+        );
+    }
 }
-

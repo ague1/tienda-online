@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:androidx="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".features.order.fragment.ClientOrderStatusFragment">
+    tools:context=".features.order.presentation.fragment.ClientOrderStatusFragment">
 
         <TextView
             android:layout_width="match_parent"

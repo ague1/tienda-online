@@ -1,48 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".features.cart.fragment.CartFragment"
-    android:padding="30dp">
+    android:background="#F7F8FA"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="8dp"
 
-    <TextView
+    tools:context=".features.cart.presentation.fragment.CartFragment">
+
+    <!-- Encabezado -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tu carrito"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
+        android:orientation="vertical"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tu carrito"
+            android:textColor="#263963"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Revisa tus productos antes de pagar"
+            android:textColor="#777777"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 
     <!-- Lista de productos -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerCarrito"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp"
+        tools:listitem="@layout/item_car" />
 
-    <!-- Total y botón pagar -->
-    <LinearLayout
+    <!-- Resumen inferior -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp">
+        android:layout_marginTop="8dp"
 
-        <TextView
-            android:id="@+id/txtTotal"
- android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total: $0.00"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="3dp"
+        app:strokeColor="#E5E7EB"
+        app:strokeWidth="1dp">
 
-        <Button
-            android:id="@+id/btnPagar"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pagar"/>
-    </LinearLayout>
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Línea superior -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total"
+                    android:textColor="#555555"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/txtTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total: $0.00"
+                    android:textColor="#263963"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Botón pagar -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPagar"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                android:minHeight="48dp"
+                android:text="Pagar"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+
+                app:backgroundTint="#263963"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/baseline_shopping_basket_24"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:iconTint="@android:color/white"
+                app:rippleColor="#40263963" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
 </LinearLayout>

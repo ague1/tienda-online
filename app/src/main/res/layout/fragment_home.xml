@@ -104,7 +104,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_allProducts"
             android:layout_width="match_parent"
-            android:layout_height="280dp"
+            android:layout_height="290dp"
             android:scrollbars="none"
             android:clipToPadding="false"
             android:padding="8dp"/>

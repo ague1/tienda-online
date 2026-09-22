@@ -1,70 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:padding="12dp">
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#E5E7EB">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:padding="12dp">
 
+        <!-- Imagen -->
         <ImageView
             android:id="@+id/imgProducto"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_marginEnd="12dp"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_product_image"
+            android:contentDescription="@string/product_image" />
 
+        <!-- Información del producto -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingEnd="8dp">
 
             <TextView
                 android:id="@+id/txtNombreProducto"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Producto"
+                android:textColor="#263963"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textSize="16sp"/>
+                android:maxLines="2"
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/txtPrecio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="$0.00"
-                android:textColor="@android:color/darker_gray"/>
+                android:textColor="#555555"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
         </LinearLayout>
 
+        <!-- Control de cantidad -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center"
+            android:background="@drawable/bg_quantity_container"
+            android:padding="2dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMenos"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:text="–"/>
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:padding="0dp"
+                android:text="−"
+                android:textColor="#263963"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:backgroundTint="@android:color/white"
+                app:cornerRadius="10dp"
+                app:iconTint="#263963"
+                app:rippleColor="#20263963" />
 
             <TextView
                 android:id="@+id/txtCantidad"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="36dp"
+                android:layout_height="48dp"
                 android:gravity="center"
                 android:text="1"
-                android:textSize="16sp"/>
+                android:textColor="#263963"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMas"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:text="+"/>
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:padding="0dp"
+                android:text="+"
+                android:textColor="#263963"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:backgroundTint="@android:color/white"
+                app:cornerRadius="10dp"
+                app:iconTint="#263963"
+                app:rippleColor="#20263963" />
+
         </LinearLayout>
+
     </LinearLayout>
+
 </com.google.android.material.card.MaterialCardView>

@@ -7,7 +7,7 @@ public class Promotion {
 
     private String id;
     private String productId;
-    private double specialPrice;
+    private long specialPrice;
     private boolean active;
 
     public String getId() {
@@ -26,11 +26,11 @@ public class Promotion {
         this.productId = productId;
     }
 
-    public double getSpecialPrice() {
+    public long getSpecialPrice() {
         return specialPrice;
     }
 
-    public void setSpecialPrice(double specialPrice) {
+    public void setSpecialPrice(long specialPrice) {
         this.specialPrice = specialPrice;
     }
 

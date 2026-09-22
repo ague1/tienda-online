@@ -61,21 +61,25 @@
             tools:visibility="visible" />
 
         <!-- Botón añadir + contador -->
+        <!-- Botón añadir + contador -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp">
 
+            <!-- Añadir al carrito -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAnadirCarrito"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:minHeight="48dp"
                 android:text="Añadir al carrito"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:padding="0dp"
-
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 app:backgroundTint="#263963"
                 app:cornerRadius="12dp"
                 app:icon="@drawable/baseline_shopping_cart_24"
@@ -84,20 +88,24 @@
                 app:iconPadding="8dp"
                 app:rippleColor="#40263963" />
 
+            <!-- Control de cantidad -->
             <LinearLayout
                 android:id="@+id/layoutContador"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:background="@drawable/bg_quantity_container"
+                android:padding="2dp">
 
+                <!-- MENOS -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnMenos"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
                     android:padding="0dp"
                     android:text="−"
                     android:textColor="#263963"
@@ -105,25 +113,26 @@
                     android:textStyle="bold"
                     app:backgroundTint="@android:color/white"
                     app:cornerRadius="10dp"
-                    app:strokeColor="#263963"
-                    app:strokeWidth="1dp" />
+                    app:rippleColor="#20263963" />
 
+                <!-- CANTIDAD -->
                 <TextView
                     android:id="@+id/txtCantidad"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:gravity="center"
                     android:text="1"
                     android:textColor="#263963"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
+                <!-- MAS -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnMas"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
                     android:padding="0dp"
                     android:text="+"
                     android:textColor="#263963"
@@ -131,12 +140,12 @@
                     android:textStyle="bold"
                     app:backgroundTint="@android:color/white"
                     app:cornerRadius="10dp"
-                    app:strokeColor="#263963"
-                    app:strokeWidth="1dp" />
+                    app:rippleColor="#20263963" />
 
             </LinearLayout>
 
         </FrameLayout>
+
 
     </LinearLayout>
 

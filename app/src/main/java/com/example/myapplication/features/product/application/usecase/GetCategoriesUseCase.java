@@ -1,7 +1,7 @@
 package com.example.myapplication.features.product.application.usecase;
 
 import com.example.myapplication.features.product.domain.model.Category;
-import com.example.myapplication.features.product.data.repository.CategoryRepository;
+import com.example.myapplication.features.product.domain.port.repository.CategoryRepository;
 import com.google.android.gms.tasks.Task;
 
 import java.util.List;

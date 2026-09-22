@@ -3,11 +3,11 @@ package com.example.myapplication.features.product.domain.model;
 public class PromotionProduct {
 
     private final Product product;
-    private final double specialPrice;
+    private final long specialPrice;
 
     public PromotionProduct(
             Product product,
-            double specialPrice
+            long specialPrice
     ) {
         this.product = product;
         this.specialPrice = specialPrice;
@@ -17,7 +17,7 @@ public class PromotionProduct {
         return product;
     }
 
-    public double getSpecialPrice() {
+    public long getSpecialPrice() {
         return specialPrice;
     }
 }

@@ -4,11 +4,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.myapplication.core.ui.UiState;
+import com.example.myapplication.features.product.application.usecase.GetCategoriesUseCase;
+import com.example.myapplication.features.product.application.usecase.GetProductsUseCase;
 import com.example.myapplication.features.product.domain.cursor.CategoryProductCursor;
 import com.example.myapplication.features.product.domain.cursor.ProductPageCursor;
 import com.example.myapplication.features.product.domain.cursor.SearchCursor;
+import com.example.myapplication.features.product.domain.model.Category;
 import com.example.myapplication.features.product.domain.model.Product;
-import com.example.myapplication.features.product.application.usecase.GetProductsUseCase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,19 +28,17 @@ public class ClientHomeViewModel extends ViewModel {
 
     private final GetProductsUseCase getProductsUseCase;
 
-    // Productos normales
-    private final MutableLiveData<List<Product>> products =
-            new MutableLiveData<>(new ArrayList<>());
+    private final GetCategoriesUseCase getCategoriesUseCase;
+
+    private final MutableLiveData<UiState<List<Product>>> productsState =
+            new MutableLiveData<>(UiState.idle());
 
     private ProductPageCursor nextCursor;
     private boolean loading = false;
     private boolean hasMore = true;
 
-
-
-    // Búsqueda
-    private final MutableLiveData<List<Product>> searchProducts =
-            new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<UiState<List<Product>>> searchProductsState =
+            new MutableLiveData<>(UiState.idle());
 
     private SearchCursor searchNextCursor;
     private boolean searchLoading = false;
@@ -46,117 +47,119 @@ public class ClientHomeViewModel extends ViewModel {
     private String currentSearch = "";
     private long searchRequestId = 0;
 
-    private final MutableLiveData<List<Product>> categoryProducts =
-            new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<UiState<List<Product>>> categoryProductsState =
+            new MutableLiveData<>(UiState.idle());
 
+    public LiveData<UiState<List<Product>>> getCategoryProductsState() {
+        return categoryProductsState;
+    }
     private CategoryProductCursor categoryNextCursor;
     private boolean categoryLoading = false;
     private boolean categoryHasMore = true;
 
     private String currentCategory = "";
-
     private long categoryRequestId = 0;
 
-    public LiveData<List<Product>> getCategoryProducts() {
-        return categoryProducts;
-    }
     @Inject
     public ClientHomeViewModel(
-            GetProductsUseCase getProductsUseCase
+            GetProductsUseCase getProductsUseCase,
+            GetCategoriesUseCase getCategoriesUseCase
     ) {
         this.getProductsUseCase = getProductsUseCase;
+        this.getCategoriesUseCase = getCategoriesUseCase;
     }
 
-    public LiveData<List<Product>> getProducts() {
-        return products;
+    public LiveData<UiState<List<Product>>> getProductsState() {
+        return productsState;
+    }
+
+    private final MutableLiveData<UiState<List<Category>>> categoriesState =
+            new MutableLiveData<>(UiState.idle());
+    public LiveData<UiState<List<Category>>> getCategoriesState() {
+        return categoriesState;
     }
 
     public void loadFirstPage() {
-
-        if (loading) {
-            return;
-        }
+        if (loading) return;
 
         loading = true;
+        nextCursor = null;
+        hasMore = true;
 
-        getProductsUseCase
-                .getFirstPage()
+        productsState.setValue(UiState.loading());
+
+        getProductsUseCase.getFirstPage()
                 .addOnSuccessListener(page -> {
+                    List<Product> result =
+                            new ArrayList<>(page.getProducts());
 
-                    products.setValue(
-                            new ArrayList<>(
-                                    page.getProducts()
-                            )
+                    productsState.setValue(
+                            UiState.success(result)
                     );
 
-                    nextCursor =
-                            page.getNextCursor();
-
-                    hasMore =
-                            page.hasMore();
-
+                    nextCursor = page.getNextCursor();
+                    hasMore = page.hasMore();
                     loading = false;
                 })
-                .addOnFailureListener(e -> loading = false);
-    }
+                .addOnFailureListener(e -> {
+                    loading = false;
 
+                    productsState.setValue(
+                            UiState.error("PRODUCTS_LOAD_ERROR")
+                    );
+                });
+    }
 
     public void loadNextPage() {
-
-        if (loading ||
-                nextCursor == null ||
-                !hasMore) {
-
+        if (loading || nextCursor == null || !hasMore) {
             return;
         }
 
         loading = true;
 
-        getProductsUseCase
-                .getNextPage(nextCursor)
+        getProductsUseCase.getNextPage(nextCursor)
                 .addOnSuccessListener(page -> {
 
-                    nextCursor =
-                            page.getNextCursor();
-
-                    hasMore =
-                            page.hasMore();
-
                     List<Product> current =
-                            products.getValue();
+                            productsState.getValue() != null
+                                    ? productsState.getValue().getData()
+                                    : null;
+
+                    List<Product> updated;
 
                     if (current == null) {
-
-                        current = new ArrayList<>();
-
+                        updated = new ArrayList<>();
                     } else {
-
-                        current =
-                                new ArrayList<>(current);
+                        updated = new ArrayList<>(current);
                     }
 
-                    current.addAll(
-                            page.getProducts()
+                    updated.addAll(page.getProducts());
+
+                    productsState.setValue(
+                            UiState.success(updated)
                     );
 
-                    products.setValue(current);
-
+                    nextCursor = page.getNextCursor();
+                    hasMore = page.hasMore();
                     loading = false;
                 })
-                .addOnFailureListener(e -> loading = false);
+                .addOnFailureListener(e -> {
+                    loading = false;
+
+                    /*
+                     * No cambiamos el estado a ERROR aquí porque
+                     * ya tenemos productos visibles y no queremos
+                     * borrar la lista actual por un fallo de paginación.
+                     */
+                });
     }
 
-    public LiveData<List<Product>> getSearchProducts() {
-
-        return searchProducts;
+    public LiveData<UiState<List<Product>>> getSearchProductsState() {
+        return searchProductsState;
     }
-
 
     public void search(String query) {
-
-        if (query == null) {
-            return;
-        }
+        if (query == null) return;
 
         final String normalizedQuery =
                 query.trim().toLowerCase(Locale.ROOT);
@@ -167,67 +170,60 @@ public class ClientHomeViewModel extends ViewModel {
         }
 
         currentSearch = normalizedQuery;
-
-        // Nueva búsqueda = nueva sesión de paginación
         searchNextCursor = null;
         searchHasMore = true;
 
-        // Identifica esta petición
         final long requestId = ++searchRequestId;
 
         searchLoading = true;
+
+        searchProductsState.setValue(
+                UiState.loading()
+        );
 
         getProductsUseCase
                 .searchProducts(normalizedQuery)
                 .addOnSuccessListener(page -> {
 
-                    // La respuesta pertenece a una búsqueda vieja
                     if (requestId != searchRequestId) {
                         return;
                     }
 
-                    searchProducts.setValue(
-                            new ArrayList<>(
-                                    page.getProducts()
-                            )
+                    List<Product> result =
+                            new ArrayList<>(page.getProducts());
+
+                    searchProductsState.setValue(
+                            UiState.success(result)
                     );
 
-                    searchNextCursor =
-                            page.getNextCursor();
-
-                    searchHasMore =
-                            page.hasMore();
-
+                    searchNextCursor = page.getNextCursor();
+                    searchHasMore = page.hasMore();
                     searchLoading = false;
                 })
                 .addOnFailureListener(e -> {
 
-                    // Ignorar errores de búsquedas anteriores
                     if (requestId != searchRequestId) {
                         return;
                     }
 
                     searchLoading = false;
+
+                    searchProductsState.setValue(
+                            UiState.error("PRODUCT_SEARCH_ERROR")
+                    );
                 });
     }
 
-
-
     public void loadNextSearchPage() {
-
-        if (searchLoading ||
-                searchNextCursor == null ||
-                !searchHasMore ||
-                currentSearch.isEmpty()) {
-
+        if (searchLoading
+                || searchNextCursor == null
+                || !searchHasMore
+                || currentSearch.isEmpty()) {
             return;
         }
 
-        final String queryAtRequest =
-                currentSearch;
-
-        final long requestId =
-                searchRequestId;
+        final String queryAtRequest = currentSearch;
+        final long requestId = searchRequestId;
 
         searchLoading = true;
 
@@ -238,37 +234,37 @@ public class ClientHomeViewModel extends ViewModel {
                 )
                 .addOnSuccessListener(page -> {
 
-                    // La búsqueda cambió mientras cargábamos
                     if (requestId != searchRequestId) {
                         return;
                     }
 
-                    // Seguridad adicional
                     if (!queryAtRequest.equals(currentSearch)) {
                         return;
                     }
 
-                    searchNextCursor =
-                            page.getNextCursor();
-
-                    searchHasMore =
-                            page.hasMore();
-
                     List<Product> current =
-                            searchProducts.getValue();
+                            searchProductsState.getValue() != null
+                                    ? searchProductsState
+                                    .getValue()
+                                    .getData()
+                                    : null;
+
+                    List<Product> updated;
 
                     if (current == null) {
-                        current = new ArrayList<>();
+                        updated = new ArrayList<>();
                     } else {
-                        current = new ArrayList<>(current);
+                        updated = new ArrayList<>(current);
                     }
 
-                    current.addAll(
-                            page.getProducts()
+                    updated.addAll(page.getProducts());
+
+                    searchProductsState.setValue(
+                            UiState.success(updated)
                     );
 
-                    searchProducts.setValue(current);
-
+                    searchNextCursor = page.getNextCursor();
+                    searchHasMore = page.hasMore();
                     searchLoading = false;
                 })
                 .addOnFailureListener(e -> {
@@ -281,13 +277,8 @@ public class ClientHomeViewModel extends ViewModel {
                 });
     }
 
-
-
     public void loadProductsByCategory(String category) {
-
-        if (category == null) {
-            return;
-        }
+        if (category == null) return;
 
         final String normalizedCategory =
                 category.trim();
@@ -296,25 +287,28 @@ public class ClientHomeViewModel extends ViewModel {
             return;
         }
 
-        currentCategory = normalizedCategory;
+        searchRequestId++;
+        currentSearch = "";
+        searchNextCursor = null;
+        searchHasMore = true;
+        searchLoading = false;
 
-        // Reiniciamos la paginación
+        currentCategory = normalizedCategory;
         categoryNextCursor = null;
         categoryHasMore = true;
 
-        // Identificador de esta petición
-        final long requestId =
-                ++categoryRequestId;
+        final long requestId = ++categoryRequestId;
 
         categoryLoading = true;
 
+        categoryProductsState.setValue(
+                UiState.loading()
+        );
+
         getProductsUseCase
-                .getProductsByCategory(
-                        normalizedCategory
-                )
+                .getProductsByCategory(normalizedCategory)
                 .addOnSuccessListener(page -> {
 
-                    // El usuario ya cambió de categoría
                     if (requestId != categoryRequestId) {
                         return;
                     }
@@ -323,18 +317,15 @@ public class ClientHomeViewModel extends ViewModel {
                         return;
                     }
 
-                    categoryProducts.setValue(
-                            new ArrayList<>(
-                                    page.getProducts()
-                            )
+                    List<Product> result =
+                            new ArrayList<>(page.getProducts());
+
+                    categoryProductsState.setValue(
+                            UiState.success(result)
                     );
 
-                    categoryNextCursor =
-                            page.getNextCursor();
-
-                    categoryHasMore =
-                            page.hasMore();
-
+                    categoryNextCursor = page.getNextCursor();
+                    categoryHasMore = page.hasMore();
                     categoryLoading = false;
                 })
                 .addOnFailureListener(e -> {
@@ -344,24 +335,23 @@ public class ClientHomeViewModel extends ViewModel {
                     }
 
                     categoryLoading = false;
+
+                    categoryProductsState.setValue(
+                            UiState.error("PRODUCT_CATEGORY_ERROR")
+                    );
                 });
     }
 
     public void loadNextCategoryPage() {
-
-        if (categoryLoading ||
-                categoryNextCursor == null ||
-                !categoryHasMore ||
-                currentCategory.isEmpty()) {
-
+        if (categoryLoading
+                || categoryNextCursor == null
+                || !categoryHasMore
+                || currentCategory.isEmpty()) {
             return;
         }
 
-        final String categoryAtRequest =
-                currentCategory;
-
-        final long requestId =
-                categoryRequestId;
+        final String categoryAtRequest = currentCategory;
+        final long requestId = categoryRequestId;
 
         categoryLoading = true;
 
@@ -372,7 +362,6 @@ public class ClientHomeViewModel extends ViewModel {
                 )
                 .addOnSuccessListener(page -> {
 
-                    // La categoría cambió
                     if (requestId != categoryRequestId) {
                         return;
                     }
@@ -381,27 +370,29 @@ public class ClientHomeViewModel extends ViewModel {
                         return;
                     }
 
-                    categoryNextCursor =
-                            page.getNextCursor();
-
-                    categoryHasMore =
-                            page.hasMore();
-
                     List<Product> current =
-                            categoryProducts.getValue();
+                            categoryProductsState.getValue() != null
+                                    ? categoryProductsState
+                                    .getValue()
+                                    .getData()
+                                    : null;
+
+                    List<Product> updated;
 
                     if (current == null) {
-                        current = new ArrayList<>();
+                        updated = new ArrayList<>();
                     } else {
-                        current = new ArrayList<>(current);
+                        updated = new ArrayList<>(current);
                     }
 
-                    current.addAll(
-                            page.getProducts()
+                    updated.addAll(page.getProducts());
+
+                    categoryProductsState.setValue(
+                            UiState.success(updated)
                     );
 
-                    categoryProducts.setValue(current);
-
+                    categoryNextCursor = page.getNextCursor();
+                    categoryHasMore = page.hasMore();
                     categoryLoading = false;
                 })
                 .addOnFailureListener(e -> {
@@ -414,38 +405,59 @@ public class ClientHomeViewModel extends ViewModel {
                 });
     }
 
-
     public void clearCategory() {
-
         categoryRequestId++;
+
         currentCategory = "";
         categoryNextCursor = null;
         categoryHasMore = true;
         categoryLoading = false;
 
-        categoryProducts.setValue(
-                Collections.emptyList()
+        categoryProductsState.setValue(
+                UiState.success(Collections.emptyList())
         );
     }
 
     public void clearSearch() {
-
-        // Invalida cualquier petición anterior
         searchRequestId++;
 
         currentSearch = "";
-
         searchNextCursor = null;
         searchHasMore = true;
         searchLoading = false;
 
-        searchProducts.setValue(
-                Collections.emptyList()
+        searchProductsState.setValue(
+                UiState.success(Collections.emptyList())
         );
     }
 
-
     public String getCurrentCategory() {
         return currentCategory;
+    }
+
+    public void loadCategories() {
+
+        categoriesState.setValue(
+                UiState.loading()
+        );
+
+        getCategoriesUseCase
+                .execute()
+                .addOnSuccessListener(categories -> {
+
+                    categoriesState.setValue(
+                            UiState.success(
+                                    categories != null
+                                            ? new ArrayList<>(categories)
+                                            : Collections.emptyList()
+                            )
+                    );
+                })
+                .addOnFailureListener(e -> {
+
+                    categoriesState.setValue(
+                            UiState.error("CATEGORIES_LOAD_ERROR")
+                    );
+                });
     }
 }
