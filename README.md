@@ -243,7 +243,7 @@ Los `ViewModel` coordinan el estado de la interfaz y consumen los casos de uso c
 
 ---
 
-## 🔌 Principio Hexagonal
+## Principio Hexagonal
 
 La comunicación entre el dominio y la infraestructura se realiza mediante puertos y adaptadores.
 
