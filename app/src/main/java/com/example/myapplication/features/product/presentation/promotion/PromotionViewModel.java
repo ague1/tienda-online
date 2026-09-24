@@ -117,10 +117,8 @@ public class PromotionViewModel extends ViewModel {
                     hasMore = page.hasMore();
                     loading = false;
                 })
-                .addOnFailureListener(e -> {
-
-                    loading = false;
-
-                });
+                .addOnFailureListener(e ->
+                        loading = false
+                );
     }
 }

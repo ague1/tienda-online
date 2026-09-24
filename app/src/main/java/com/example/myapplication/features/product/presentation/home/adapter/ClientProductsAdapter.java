@@ -36,8 +36,6 @@ public class ClientProductsAdapter
         extends ListAdapter<Product, ClientProductsAdapter.ViewHolder> {
 
     private final OnCartClickListener cartClickListener;
-
-    // productId -> cantidad actual en carrito
     private final Map<String, Integer> cartQuantities =
             new HashMap<>();
 
@@ -101,11 +99,9 @@ public class ClientProductsAdapter
 
         TextView textSpecialPrice;
         TextView textNormalPrice;
-
         ImageView imageProduct;
         TextView nameProduct;
         TextView textCountProduct;
-
         Button addCart;
         LinearLayout linearLayout;
         Button buttonLess;
@@ -391,17 +387,14 @@ public class ClientProductsAdapter
             );
         }
 
-        // No permitir superar el stock
         holder.buttonMore.setEnabled(
                 quantity < stock
         );
 
-        // No permitir bajar de 0
         holder.buttonLess.setEnabled(
                 quantity > 0
         );
 
-        // Si no hay stock, no permitir agregar
         holder.addCart.setEnabled(
                 stock > 0
         );

@@ -117,8 +117,6 @@ public class OrderRepository {
     }
 
 
-
-    // Convertir un documento Firebase a objeto Order
     public Order map(DocumentSnapshot doc) {
 
         if (doc == null || !doc.exists()) {
@@ -127,10 +125,8 @@ public class OrderRepository {
 
         Order order = new Order();
 
-        // ID
         order.setId(doc.getId());
 
-        // Datos del cliente
         order.setName(
                 doc.getString("name")
         );
@@ -147,12 +143,10 @@ public class OrderRepository {
                 doc.getString("address")
         );
 
-        // Pago
         order.setPayment(
                 doc.getString("payment")
         );
 
-        // Entrega
         order.setDeliveryDate(
                 doc.getString("deliveryDate")
         );
@@ -170,7 +164,6 @@ public class OrderRepository {
                         : 0L
         );
 
-        // Totales
         Long subtotal =
                 doc.getLong("subtotal");
 
@@ -180,8 +173,7 @@ public class OrderRepository {
                         : 0L
         );
 
-        Long total =
-                doc.getLong("total");
+        Long total = doc.getLong("total");
 
         order.setTotal(
                 total != null
@@ -189,22 +181,18 @@ public class OrderRepository {
                         : 0L
         );
 
-        // Estado
         order.setStatus(
                 doc.getString("status")
         );
 
-        // Usuario
         order.setUserId(
                 doc.getString("userId")
         );
 
-        // Timestamp
         order.setTimestamp(
                 doc.getDate("timestamp")
         );
 
-        // Items
         Object items =
                 doc.get("items");
 
@@ -302,8 +290,6 @@ public class OrderRepository {
     }
 
 
-
-    // Convertir una lista de documentos Firebase a lista de Order
     public List<Order> mapList(
             List<DocumentSnapshot> documents
     ) {
@@ -411,12 +397,6 @@ public class OrderRepository {
 
             String status = orderDocument.getString("status");
 
-                    /*
-                     * Importantísimo:
-                     *
-                     * Si el pedido ya fue pagado,
-                     * confirmado o expirado, no hacemos nada.
-                     */
             if (!"pending".equals(status)) {
                 return null;
             }
@@ -555,10 +535,6 @@ public class OrderRepository {
             String status =
                     orderDocument.getString("status");
 
-            /*
-             * El pago solamente puede confirmar
-             * un pedido que todavía está pendiente.
-             */
             if (!"pending".equals(status)) {
 
                 throw new IllegalStateException(
@@ -582,10 +558,6 @@ public class OrderRepository {
 
             Date now = new Date();
 
-            /*
-             * Si las 24 horas ya pasaron,
-             * el pago ya no puede confirmar este pedido.
-             */
             if (!paymentDeadline.after(now)) {
 
                 throw new IllegalStateException(
@@ -593,9 +565,6 @@ public class OrderRepository {
                 );
             }
 
-            /*
-             * pending → confirmed
-             */
             dataSource.confirmOrderPaymentInTransaction(
                     transaction,
                     orderId

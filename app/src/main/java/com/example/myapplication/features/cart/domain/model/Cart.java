@@ -22,12 +22,6 @@ public class Cart {
         items = new LinkedHashMap<>();
     }
 
-    /**
-     * Devuelve una copia de los items.
-     *
-     * El código externo no puede modificar directamente
-     * el contenido interno del carrito.
-     */
     public List<CartItem> getItems() {
 
         List<CartItem> copy =
@@ -35,9 +29,7 @@ public class Cart {
 
         for (CartItem item : items.values()) {
 
-            copy.add(
-                    item.copy()
-            );
+            copy.add(item.copy());
         }
 
         return copy;
@@ -57,19 +49,15 @@ public class Cart {
             return;
         }
 
-        String productId =
-                product.getId();
+        String productId = product.getId();
 
-        if (productId == null ||
-                productId.trim().isEmpty()) {
+        if (productId == null || productId.trim().isEmpty()) {
             return;
         }
 
-        long price =
-                pricedProduct.getPrice();
+        long price = pricedProduct.getPrice();
 
-        CartItem existing =
-                items.get(productId);
+        CartItem existing = items.get(productId);
 
         if (existing != null) {
 
@@ -94,14 +82,6 @@ public class Cart {
                 item
         );
     }
-
-
-    /**
-     * Actualiza únicamente el precio vigente
-     * de un producto que ya está en el carrito.
-     *
-     * La cantidad NO cambia.
-     */
     public void increase(
             String productId
     ) {
@@ -110,23 +90,14 @@ public class Cart {
             return;
         }
 
-        CartItem item =
-                items.get(productId);
+        CartItem item = items.get(productId);
 
         if (item == null) {
             return;
         }
 
-        item.increase(
-                MAX_QUANTITY
-        );
+        item.increase(MAX_QUANTITY);
     }
-
-    /**
-     * Disminuye la cantidad.
-     *
-     * Si llega a cero, elimina el producto.
-     */
     public void decrease(
             String productId
     ) {
@@ -135,8 +106,7 @@ public class Cart {
             return;
         }
 
-        CartItem item =
-                items.get(productId);
+        CartItem item = items.get(productId);
 
         if (item == null) {
             return;
@@ -146,15 +116,10 @@ public class Cart {
 
         if (item.getQuantity() <= 0) {
 
-            items.remove(
-                    productId
-            );
+            items.remove(productId);
         }
     }
 
-    /**
-     * Elimina completamente un producto.
-     */
     public void removeProduct(
             String productId
     ) {
@@ -163,43 +128,24 @@ public class Cart {
             return;
         }
 
-        items.remove(
-                productId
-        );
+        items.remove(productId);
     }
 
-    /**
-     * Vacía completamente el carrito.
-     */
     public void clear() {
         items.clear();
     }
 
-    /**
-     * Calcula el total usando el precio vigente
-     * de cada CartItem.
-     */
     public long getTotal() {
 
         long total = 0L;
 
         for (CartItem item : items.values()) {
 
-            total +=
-                    item.getPrecio()
-                            * item.getQuantity();
+            total += item.getPrecio() * item.getQuantity();
         }
 
         return total;
     }
-
-    /**
-     * Reemplaza completamente el contenido
-     * del carrito.
-     *
-     * Se utiliza principalmente al cargar/sincronizar
-     * información persistida.
-     */
     public void replaceItems(
             List<CartItem> newItems
     ) {
@@ -253,12 +199,6 @@ public class Cart {
             );
         }
     }
-
-    /**
-     * Establece una cantidad concreta.
-     *
-     * quantity <= 0 elimina el producto.
-     */
     public void setQuantity(
             String productId,
             int quantity
@@ -268,8 +208,7 @@ public class Cart {
             return;
         }
 
-        CartItem item =
-                items.get(productId);
+        CartItem item = items.get(productId);
 
         if (item == null) {
             return;
@@ -277,9 +216,7 @@ public class Cart {
 
         if (quantity <= 0) {
 
-            items.remove(
-                    productId
-            );
+            items.remove(productId);
 
             return;
         }
@@ -321,6 +258,5 @@ public class Cart {
 
         return true;
     }
-
 
 }

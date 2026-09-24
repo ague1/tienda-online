@@ -1,259 +1,371 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/main_screen"
+    android:fillViewport="true"
     tools:context=".features.order.presentation.fragment.CheckoutFragment">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
 
+        <!-- TÍTULO -->
         <TextView
-            android:text="Checkout"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp" />
+            android:text="Confirmacion de pedido"
+            android:textColor="@color/foodstore_text"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"/>
 
-        <!-- Order Summary Card -->
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            android:layout_marginTop="12dp"
-            app:cardElevation="4dp">
+            app:cardBackgroundColor="@color/foodstore_surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="5dp">
 
             <LinearLayout
-                android:orientation="vertical"
-                android:padding="16dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <TextView
-                    android:text="Order Summary"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <!-- Product row -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerCheckout"
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="12dp"/>
+                    android:text="Ressumen"
+                    android:textColor="@color/foodstore_text"
+                    android:textSize="19sp"
+                    android:textStyle="bold"/>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerCheckout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"/>
+
+                <!-- SUBTOTAL -->
                 <TextView
                     android:id="@+id/subtotalText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:text="Subtotal: $13.99"
-                    android:layout_marginTop="12dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:textColor="@color/foodstore_text_secondary"
+                    android:textSize="15sp"/>
 
+                <!-- DELIVERY -->
                 <TextView
                     android:id="@+id/deliveryFeeText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Delivery Fee: $2.99"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:textColor="@color/foodstore_text_secondary"
+                    android:textSize="15sp"/>
 
+                <!-- TOTAL -->
                 <TextView
                     android:id="@+id/totalText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:text="Total: $16.98"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:layout_marginTop="6dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:textColor="@color/foodstore_text"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+
             </LinearLayout>
+
         </androidx.cardview.widget.CardView>
 
-        <!-- Delivery Information -->
+        <!-- DELIVERY INFORMATION -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            app:cardBackgroundColor="@color/foodstore_surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="5dp">
 
             <LinearLayout
-                android:orientation="vertical"
-                android:padding="16dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <TextView
-                    android:text="Delivery Information"
-                    android:textSize="18sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Direccion de entrega"
+                    android:textColor="@color/foodstore_text"
+                    android:textSize="19sp"
                     android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_marginBottom="4dp"/>
 
+
+                <!-- NOMBRE -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Full Name *">
+                    android:layout_marginTop="16dp"
+                    android:hint="Nombre Completo *"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeColor="@color/foodstore_primary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputName"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@color/foodstore_text_secondary"
+                        />
+
                 </com.google.android.material.textfield.TextInputLayout>
 
+
+                <!-- EMAIL -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email *">
+                    android:layout_marginTop="14dp"
+                    android:hint="Email *"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeColor="@color/foodstore_primary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputEmail"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@color/foodstore_text_secondary"/>
+
+
                 </com.google.android.material.textfield.TextInputLayout>
 
+
+                <!-- TELÉFONO -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Phone Number *">
+                    android:layout_marginTop="14dp"
+                    android:hint="Numero de telefono *"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeColor="@color/foodstore_primary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputPhone"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:inputType="phone"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@color/foodstore_text_secondary"/>
+
                 </com.google.android.material.textfield.TextInputLayout>
 
+
+                <!-- DIRECCIÓN -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Street Address *">
+                    android:layout_marginTop="14dp"
+                    android:hint="Direccion de entrega *"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeColor="@color/foodstore_primary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputAddress"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:inputType="textPostalAddress"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@color/foodstore_text_secondary"/>
+
                 </com.google.android.material.textfield.TextInputLayout>
+
             </LinearLayout>
+
         </androidx.cardview.widget.CardView>
 
-        <!-- Payment Method -->
+        <!-- PAYMENT METHOD -->
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            app:cardBackgroundColor="@color/foodstore_surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="5dp">
 
             <LinearLayout
-                android:orientation="vertical"
-                android:padding="16dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <TextView
-                    android:text="Payment Method"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Methodo de Pago"
+                    android:textColor="@color/foodstore_text"
+                    android:textSize="19sp"
+                    android:textStyle="bold"/>
 
                 <RadioGroup
                     android:id="@+id/paymentGroup"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
 
                     <RadioButton
                         android:id="@+id/payCard"
-                        android:layout_height="match_parent"
-                        android:layout_width="wrap_content"
-                        android:text="Credit/Debit Card"/>
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Credit/Debit Card"
+                        android:textSize="16sp"/>
 
                     <RadioButton
                         android:id="@+id/payCash"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="Cash on Delivery"
-                        android:layout_height="match_parent"
-                        android:layout_width="wrap_content"/>
+                        android:textSize="16sp"/>
+
                 </RadioGroup>
+
             </LinearLayout>
+
         </androidx.cardview.widget.CardView>
+
+        <!-- SCHEDULE DELIVERY -->
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            app:cardBackgroundColor="@color/foodstore_surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="5dp">
 
             <LinearLayout
-                android:orientation="vertical"
-                android:padding="16dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <TextView
-                    android:text="Schedule Delivery"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Programar la entrega"
+                    android:textColor="@color/foodstore_text"
+                    android:textSize="19sp"
+                    android:textStyle="bold"/>
 
-                <!-- Fecha -->
-                <TextView
-                    android:text="Delivery Date"
-                    android:textStyle="bold"
-                    android:layout_marginTop="12dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
 
+                <!-- FECHA -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Dia de entrega"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeColor="@color/foodstore_primary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:focusable="false"
                         android:clickable="true"
-                        android:hint="Select Date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:hint="Dia de entrega"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"/>
+
+
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Hora -->
-                <TextView
-                    android:text="Delivery Time"
-                    android:textStyle="bold"
-                    android:layout_marginTop="12dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
 
+                <!-- HORA -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:hint="Hora de Entrega"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeColor="@color/foodstore_primary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:focusable="false"
                         android:clickable="true"
-                        android:hint="Select Time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:hint="Hora de Entrega"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"/>
+
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
+
         </androidx.cardview.widget.CardView>
 
-        <!-- Button -->
-        <Button
+        <!-- PLACE ORDER -->
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPlaceOrder"
-            android:text="Place Order - $16.98"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="@android:color/black"
-            android:textColor="@android:color/white"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="52dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:text="Realizar Pedido - $16.98"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/foodstore_primary"
+            app:cornerRadius="12dp"/>
 
     </LinearLayout>
 

@@ -268,7 +268,6 @@ public class CheckoutFragment extends Fragment {
                             day
                     );
 
-            // No permitir fechas anteriores a hoy.
             dialog.getDatePicker()
                     .setMinDate(
                             System.currentTimeMillis()
@@ -333,20 +332,11 @@ public class CheckoutFragment extends Fragment {
                 getViewLifecycleOwner(),
                 value -> {
 
-                    subtotal =
-                            value != null
+                    subtotal = value != null
                                     ? value
                                     : 0L;
 
-                    /*
-                     * Este cálculo es solamente para mostrar
-                     * una estimación al usuario.
-                     *
-                     * NO se utiliza para crear la orden
-                     * como valor confiable.
-                     */
-                    total =
-                            subtotal + delivery;
+                    total = subtotal + delivery;
 
                     updateTotalUI();
                 }

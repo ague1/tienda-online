@@ -51,9 +51,6 @@ public final class CartItem {
         return image;
     }
 
-    /**
-     * Precio vigente del producto en el carrito.
-     */
     public long getPrecio() {
         return precio;
     }
@@ -61,13 +58,6 @@ public final class CartItem {
     public int getQuantity() {
         return quantity;
     }
-
-    /**
-     * Actualiza el precio vigente.
-     *
-     * Se utiliza cuando cambia el precio normal
-     * o promocional del producto.
-     */
     void updatePrice(long newPrice) {
 
         if (newPrice < 0) {
@@ -76,10 +66,6 @@ public final class CartItem {
 
         this.precio = newPrice;
     }
-
-    /**
-     * Aumenta una unidad respetando el máximo permitido.
-     */
     void increase(int maxQuantity) {
 
         if (maxQuantity <= 0) {
@@ -90,20 +76,12 @@ public final class CartItem {
             quantity++;
         }
     }
-
-    /**
-     * Disminuye una unidad.
-     */
     void decrease() {
 
         if (quantity > 0) {
             quantity--;
         }
     }
-
-    /**
-     * Establece la cantidad respetando el máximo permitido.
-     */
     void setQuantity(
             int quantity,
             int maxQuantity

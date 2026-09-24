@@ -123,7 +123,6 @@ public class ClientHomeFragment extends Fragment {
                     switch (state.getStatus()) {
 
                         case LOADING:
-                            // Opcional: mostrar indicador de carga.
                             break;
 
                         case SUCCESS:
@@ -463,7 +462,6 @@ public class ClientHomeFragment extends Fragment {
 
                 String query = s.toString().trim();
 
-                // Cancelar búsqueda pendiente
                 if (searchRunnable != null) {
                     debounceScheduler.removeCallbacks(searchRunnable);
 
@@ -488,6 +486,8 @@ public class ClientHomeFragment extends Fragment {
                     return;
                 }
 
+                layoutPromotions.setVisibility(View.GONE);
+                txtLookProducts.setVisibility(View.GONE);
                 titulo.setText(R.string.title_search_result);
 
                 searchRunnable = () -> {

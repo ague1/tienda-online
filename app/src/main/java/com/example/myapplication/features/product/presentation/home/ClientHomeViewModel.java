@@ -146,11 +146,6 @@ public class ClientHomeViewModel extends ViewModel {
                 .addOnFailureListener(e -> {
                     loading = false;
 
-                    /*
-                     * No cambiamos el estado a ERROR aquí porque
-                     * ya tenemos productos visibles y no queremos
-                     * borrar la lista actual por un fallo de paginación.
-                     */
                 });
     }
 

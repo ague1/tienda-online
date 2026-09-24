@@ -94,8 +94,6 @@ public class OtpDataSource {
         return source.getTask();
     }
 
-
-
     public Task<OtpResult> verifyOtp(
             String email,
             String otp

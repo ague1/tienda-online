@@ -121,7 +121,6 @@ public class OtpActivity extends AppCompatActivity {
                 new OtpTextWatcher( code3, code4, code2 ) );
 
         code4.addTextChangedListener(
-
                 new OtpTextWatcher( code4, null, code3 ) );
     }
 }
