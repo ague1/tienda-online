@@ -1,36 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:androidx="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="@color/main_screen"
     tools:context=".features.order.presentation.fragment.ClientOrderStatusFragment">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Mi Historial"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="#333"
-            android:layout_margin="20dp"
-            android:layout_gravity="center"
-            />
+    <!-- Header -->
 
-        <!-- Contenedor dinámico -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="18dp"
+        android:gravity="center"
+        android:text="Mi Historial"
+        android:textColor="@color/foodstore_primary"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+    <!-- Tabs -->
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayoutOrders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        androidx:tabIndicatorColor="@color/black"
-        androidx:tabMode="scrollable"
-        androidx:tabGravity="center"
-        androidx:tabTextAppearance="@style/TabTextStyle" />
+        android:background="@color/foodstore_surface"
+        app:tabGravity="center"
+        app:tabIndicatorColor="@color/foodstore_primary"
+        app:tabIndicatorFullWidth="false"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="@color/foodstore_primary"
+        app:tabTextAppearance="@style/TabTextStyle"
+        app:tabTextColor="@color/foodstore_text_secondary" />
+
+    <!-- Orders -->
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPagerOrders"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
 </LinearLayout>

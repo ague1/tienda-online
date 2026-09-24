@@ -2,7 +2,16 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="main_screen">#DFF5F4</color>
+    <color name="main_screen">#F2F7FF</color>
     <color name="gray">#BECACA</color>
+
+    <color name="foodstore_background">#FFFFFF</color>
+    <color name="foodstore_surface">#FFFFFF</color>
+    <color name="foodstore_primary">#263963</color>
+    <color name="foodstore_primary_dark">#1D2C4D</color>
+    <color name="foodstore_text">#111111</color>
+    <color name="foodstore_text_secondary">#777777</color>
+    <color name="foodstore_border">#D9D9D9</color>
+    <color name="foodstore_lavender">#F1ECF8</color>
 
 </resources>

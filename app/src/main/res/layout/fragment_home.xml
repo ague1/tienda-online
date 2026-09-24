@@ -1,70 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:fillViewport="true"
     android:clipToPadding="false"
+    android:background="@color/white"
     tools:context=".features.product.presentation.home.ClientHomeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
+
+        <!-- Header -->
 
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:gravity="center"
             android:text="FoodStore"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="16dp"/>
+            android:textColor="@color/foodstore_primary"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-        <!-- Barra de búsqueda -->
-        <EditText
-            android:id="@+id/etSearch"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:hint="Search for food..."
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:background="@drawable/bg_search_box"
-            android:drawableStart="@drawable/search_24dp"
-            android:drawablePadding="8dp"
-            android:inputType="text" />
+        <!-- Search -->
 
-        <!-- Título Categorías -->
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="12dp">
+            android:hint="Busca articulos"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusTopStart="14dp"
+            app:boxStrokeColor="@color/foodstore_primary"
+            app:startIconDrawable="@drawable/search_24dp">
 
-            <TextView
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Categories"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:textColor="@color/black"/>
-        </LinearLayout>
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@android:color/black"
+                android:textColorHint="@color/foodstore_text_secondary"/>
 
-        <!-- Contenedor de categorías -->
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- Categories -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="10dp"
+            android:text="Categorias"
+            android:textColor="@color/foodstore_text"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerCategories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="8dp"
-            android:scrollbars="none"/>
+            android:clipToPadding="false"
+            android:paddingVertical="6dp"
+            android:scrollbars="none" />
 
-        <!-- Título promociones -->
+
+        <!-- Promotions -->
+
         <LinearLayout
             android:id="@+id/layoutPromotions"
             android:layout_width="match_parent"
@@ -75,40 +89,44 @@
                 android:id="@+id/txtEspecialProducts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:layout_marginBottom="10dp"
                 android:text="Especiales de Hoy"
-                android:layout_marginTop="20dp"
-                android:textStyle="bold"
+                android:textColor="@color/foodstore_text"
                 android:textSize="20sp"
-                android:textColor="@color/black"/>
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_promotionProducts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                android:padding="8dp"/>
+                android:clipToPadding="false"
+                android:paddingVertical="6dp"
+                android:scrollbars="none" />
 
         </LinearLayout>
 
 
-        <!-- Productos -->
+        <!-- All Products -->
+
         <TextView
             android:id="@+id/txtLookProducts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hecha un Vistaso"
-            android:textStyle="bold"
+            android:layout_marginTop="26dp"
+            android:layout_marginBottom="10dp"
+            android:text="Echa un vistazo"
+            android:textColor="@color/foodstore_text"
             android:textSize="20sp"
-            android:textColor="@color/black"/>
+            android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_allProducts"
             android:layout_width="match_parent"
             android:layout_height="290dp"
-            android:scrollbars="none"
             android:clipToPadding="false"
-            android:padding="8dp"/>
-
+            android:padding="6dp"
+            android:scrollbars="none" />
 
     </LinearLayout>
 

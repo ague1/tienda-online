@@ -40,14 +40,12 @@ exports.normalizeProductName = onDocumentWritten(
     async (event) => {
       const after = event.data.after;
 
-      // Si el producto fue eliminado, no hacemos nada.
       if (!after.exists) {
         return;
       }
 
       const data = after.data();
 
-      // Si no tiene nombre, no hacemos nada.
       if (!data.nombre) {
         return;
       }

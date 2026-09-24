@@ -20,8 +20,7 @@ public class AuthDataSource {
 
     public String getCurrentUserId() {
 
-        FirebaseUser user =
-                auth.getCurrentUser();
+        FirebaseUser user = auth.getCurrentUser();
 
         if (user != null) {
             return user.getUid();
@@ -59,8 +58,7 @@ public class AuthDataSource {
 
     public Task<Void> deleteUser() {
 
-        FirebaseUser user =
-                auth.getCurrentUser();
+        FirebaseUser user = auth.getCurrentUser();
 
         if (user == null) {
             return Tasks.forException(
@@ -72,6 +70,5 @@ public class AuthDataSource {
 
         return user.delete();
     }
-
 
 }

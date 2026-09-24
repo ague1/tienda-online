@@ -37,16 +37,12 @@ public class SettingsFragment extends Fragment {
         redictionLogout = view.findViewById(R.id.logoutButton);
 
         redictionLogout.setOnClickListener(v -> {
-            // Cierra la sesión del usuario
 
             logoutUseCase.execute();
 
-            // Redirige a Login
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-
-            // Cierra la actividad actual
             getActivity().finish();
         });
 
@@ -55,7 +51,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 }

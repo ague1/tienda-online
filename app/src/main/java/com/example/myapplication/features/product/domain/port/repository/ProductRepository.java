@@ -135,8 +135,6 @@ public class ProductRepository {
         );
     }
 
-
-
     public Task<SearchPage> searchProducts(
             String query,
             int pageSize

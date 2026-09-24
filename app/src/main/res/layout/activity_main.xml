@@ -20,6 +20,8 @@
         app:menu="@menu/menu_main"
         android:layout_height="66dp"
         app:itemPaddingBottom="10dp"
-        app:labelVisibilityMode="labeled"/>
+        app:labelVisibilityMode="labeled"
+        app:itemTextColor="@color/black"
+        android:background="@color/main_screen"/>
 
 </LinearLayout>

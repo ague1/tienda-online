@@ -101,9 +101,9 @@ function hashValue(value) {
         .digest('hex');
 }
 
-/*
- * Token criptográficamente seguro.
- */
+
+ //Token criptográficamente seguro.
+
 function generateResetToken() {
 
     return crypto
@@ -111,9 +111,8 @@ function generateResetToken() {
         .toString('hex');
 }
 
-/*
- * Comparación resistente a timing attacks.
- */
+//Comparación resistente a timing attacks.
+
 function safeCompareHex(valueA, valueB) {
 
     try {
@@ -367,12 +366,8 @@ app.post(
                 });
             }
 
-            /*
-             * Primero comprobamos si existe el usuario.
-             *
-             * IMPORTANTE:
-             * Externamente no revelaremos si existe.
-             */
+
+            //Comprobacion si existe el usuario
 
             let userExists = true;
 
@@ -397,11 +392,8 @@ app.post(
                 }
             }
 
-            /*
-             * Para evitar enumeración de usuarios:
-             *
-             * si no existe, respondemos igual.
-             */
+
+             //Si no existe, respondemos igual.
 
             if (!userExists) {
 
@@ -415,28 +407,18 @@ app.post(
                 });
             }
 
-            /*
-             * Generar OTP.
-             */
+             //Generar OTP
 
-            const otp =
-                generateOTP();
+            const otp = generateOTP();
+            const otpHash = hashValue(otp);
 
-            const otpHash =
-                hashValue(otp);
+            //Un único OTP activo.
 
-            /*
-             * Un único OTP activo.
-             */
 
             await saveOtp(
                 email,
                 otpHash
             );
-
-            /*
-             * Enviar correo.
-             */
 
             await transporter.sendMail({
 
@@ -582,9 +564,7 @@ app.post(
                 });
             }
 
-            /*
-             * Buscar OTP.
-             */
+            // Buscar OTP
 
             const record =
                 await getOtp(email);
@@ -600,9 +580,7 @@ app.post(
                 });
             }
 
-            /*
-             * Comprobar expiración.
-             */
+            // Comprobar expiración.
 
             if (
                 Date.now() >
@@ -643,15 +621,9 @@ app.post(
                 });
             }
 
-            /*
-             * Hash del OTP recibido.
-             */
-
             const inputHash = hashValue(otp);
 
-            /*
-             * Comparación segura.
-             */
+            // Comparación segura.
 
             const valid =
                 safeCompareHex(
@@ -659,9 +631,7 @@ app.post(
                     record.otpHash
                 );
 
-            /*
-             * OTP incorrecto.
-             */
+            // OTP incorrecto.
 
             if (!valid) {
 
@@ -674,17 +644,12 @@ app.post(
                 });
             }
 
-            /*
-             * OTP correcto
-             * Primero obtenemos el usuario.
-             */
-
+            // OTP correcto
             let user;
 
             try {
 
-                user =
-                    await admin
+                user = await admin
                         .auth()
                         .getUserByEmail(email);
 
@@ -694,7 +659,6 @@ app.post(
                     'GET_USER_AFTER_OTP_ERROR:',
                     error?.code || 'UNKNOWN_ERROR'
                 );
-
 
                 await deleteOtp(email);
 
@@ -707,15 +671,9 @@ app.post(
                 });
             }
 
-            /*
-             * OTP de un solo uso.
-             */
-
             await deleteOtp(email);
 
-            /*
-             * Crear token de recuperación.
-             */
+            // Crear token de recuperación.
 
             const resetToken =
                 generateResetToken();
@@ -729,13 +687,6 @@ app.post(
                     email,
                     resetTokenHash
                 );
-
-            /*
-             * IMPORTANTE:
-             *
-             * El challengeId y resetToken juntos
-             * permiten autorizar el siguiente paso.
-             */
 
             return res.status(200).json({
 
@@ -779,9 +730,7 @@ app.post('/reset-password',resetPasswordLimiter,
                 password
             } = req.body;
 
-            /*
-             * Validación básica.
-             */
+            // Validación básica.
 
             if (
                 !challengeId ||
@@ -801,9 +750,7 @@ app.post('/reset-password',resetPasswordLimiter,
                 });
             }
 
-            /*
-             * Validar contraseña en servidor.
-             */
+            // Validar contraseña en servidor.
 
             if (!isValidPassword(password)) {
 
@@ -815,10 +762,6 @@ app.post('/reset-password',resetPasswordLimiter,
 
                 });
             }
-
-            /*
-             * Buscar challenge.
-             */
 
             const challenge = await getResetChallenge(
                     challengeId
@@ -923,9 +866,7 @@ app.post('/reset-password',resetPasswordLimiter,
                 challengeId
             );
 
-            /*
-             * Respuesta.
-             */
+            // Respuesta.
 
             return res.status(200).json({
 

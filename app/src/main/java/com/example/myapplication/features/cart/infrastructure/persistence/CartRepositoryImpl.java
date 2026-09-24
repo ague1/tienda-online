@@ -125,19 +125,9 @@ public class CartRepositoryImpl implements CartRepository {
 
         started = false;
 
-        /*
-         * Cancelar cualquier guardado pendiente.
-         */
         cancelPendingSave();
-
-        /*
-         * Detener listener de Firestore.
-         */
         stopSync();
 
-        /*
-         * Quitar listener de FirebaseAuth.
-         */
         if (authStateListener != null) {
 
             auth.removeAuthStateListener(
@@ -147,10 +137,6 @@ public class CartRepositoryImpl implements CartRepository {
             authStateListener = null;
         }
 
-        /*
-         * Invalidar cualquier operación
-         * lógica pendiente.
-         */
         localChangeVersion++;
 
         currentUid = null;
@@ -159,9 +145,6 @@ public class CartRepositoryImpl implements CartRepository {
 
         saveInProgress = false;
 
-        /*
-         * Limpiar carrito local.
-         */
         cart.clear();
 
         publishCart();
@@ -336,41 +319,19 @@ public class CartRepositoryImpl implements CartRepository {
 
         hasPendingLocalChanges = true;
 
-        /*
-         * Cada modificación genera una nueva versión.
-         */
         final long changeVersion = ++localChangeVersion;
 
-        /*
-         * Guardamos el UID actual.
-         *
-         * Si cambia el usuario antes de completar
-         * el guardado, ignoramos el resultado.
-         */
         final String uidAtSchedule = currentUid;
 
-        /*
-         * Copia del carrito en este momento.
-         */
         final List<CartItem> snapshot = new ArrayList<>(
                 cart.getItems());
 
-        /*
-         * Cancelamos el guardado anterior.
-         */
         cancelPendingSave();
 
         pendingSave = () -> {
 
-            /*
-             * El Runnable ya no está pendiente.
-             */
             pendingSave = null;
 
-            /*
-             * Verificamos que el usuario
-             * siga siendo el mismo.
-             */
             if (!Objects.equals(
                     currentUid,
                     uidAtSchedule
@@ -384,10 +345,6 @@ public class CartRepositoryImpl implements CartRepository {
                     .saveCart(snapshot)
                     .addOnSuccessListener(unused -> {
 
-                        /*
-                         * El usuario pudo cambiar mientras
-                         * se estaba guardando.
-                         */
                         if (!Objects.equals(
                                 currentUid,
                                 uidAtSchedule
@@ -395,11 +352,6 @@ public class CartRepositoryImpl implements CartRepository {
                             return;
                         }
 
-                        /*
-                         * Solamente consideramos que
-                         * estamos sincronizados si no hubo
-                         * otro cambio después de este save.
-                         */
                         if (changeVersion ==
                                 localChangeVersion) {
 
@@ -417,10 +369,6 @@ public class CartRepositoryImpl implements CartRepository {
                             return;
                         }
 
-                        /*
-                         * Dejamos marcado que todavía
-                         * existen cambios locales.
-                         */
                         hasPendingLocalChanges = true;
 
                         saveInProgress = false;
@@ -432,12 +380,6 @@ public class CartRepositoryImpl implements CartRepository {
                 SAVE_DELAY_MS
         );
     }
-
-
-    // =========================================================
-    // CANCELAR GUARDADO PENDIENTE
-    // =========================================================
-
     private void cancelPendingSave() {
 
         if (pendingSave == null) {
@@ -450,12 +392,6 @@ public class CartRepositoryImpl implements CartRepository {
 
         pendingSave = null;
     }
-
-
-    // =========================================================
-    // SINCRONIZACIÓN FIRESTORE
-    // =========================================================
-
     @Override
     public void startSync() {
 
@@ -463,73 +399,44 @@ public class CartRepositoryImpl implements CartRepository {
             return;
         }
 
-        /*
-         * Ya existe un listener.
-         */
         if (cartListener != null) {
             return;
         }
 
-        /*
-         * Guardamos el UID con el que se creó
-         * este listener.
-         */
         final String uidAtStart =
                 currentUid;
 
-        cartListener =
-                dataSource.listenCart(
-                        (document, error) -> {
+        cartListener = dataSource.listenCart(
+                (document, error) -> {
 
-                            /*
-                             * El listener pertenece a otro usuario.
-                             */
-                            if (!Objects.equals(
-                                    currentUid,
-                                    uidAtStart
-                            )) {
-                                return;
-                            }
+                    if (!Objects.equals(
+                            currentUid,
+                            uidAtStart
+                    )) {
+                        return;
+                    }
 
-                            /*
-                             * Error de Firestore.
-                             */
-                            if (error != null) {
-                                return;
-                            }
+                    if (error != null) {
 
-                            /*
-                             * No sobrescribir cambios locales
-                             * pendientes.
-                             */
-                            if (hasPendingLocalChanges ||
-                                    saveInProgress) {
-                                return;
-                            }
+                        return;
+                    }
 
-                            List<CartItem> savedItems =
-                                    dataSource.documentToItems(
-                                            document
-                                    );
+                    if (hasPendingLocalChanges ||
+                            saveInProgress) {
+                        return;
+                    }
 
-                            /*
-                             * Reemplazamos el carrito local
-                             * con el estado persistido.
-                             */
-                            cart.replaceItems(
-                                    savedItems
+
+                    List<CartItem> savedItems =
+                            dataSource.documentToItems(
+                                    document
                             );
 
-                            publishCart();
-                        }
-                );
+                    cart.replaceItems(savedItems);
+
+                    publishCart();
+                });
     }
-
-
-    // =========================================================
-    // DETENER SINCRONIZACIÓN FIRESTORE
-    // =========================================================
-
     @Override
     public void stopSync() {
 
@@ -542,37 +449,17 @@ public class CartRepositoryImpl implements CartRepository {
         cartListener = null;
     }
 
-
-    // =========================================================
-    // CAMBIO DE USUARIO
-    // =========================================================
-
     private void onUserChanged() {
 
-        /*
-         * Cancelamos cualquier guardado pendiente
-         * del usuario anterior.
-         */
         cancelPendingSave();
-
-        /*
-         * Eliminamos el listener del usuario anterior.
-         */
         stopSync();
 
-        /*
-         * Invalidamos operaciones anteriores.
-         */
         localChangeVersion++;
 
         hasPendingLocalChanges = false;
 
         saveInProgress = false;
 
-        /*
-         * Muy importante:
-         * no conservar el carrito del usuario anterior.
-         */
         cart.clear();
 
         publishCart();

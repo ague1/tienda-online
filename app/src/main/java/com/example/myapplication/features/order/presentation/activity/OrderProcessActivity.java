@@ -140,14 +140,6 @@ public class OrderProcessActivity extends AppCompatActivity {
                             break;
 
                         case ERROR:
-                            /*
-                             * Conservamos por ahora
-                             * el comportamiento actual:
-                             * no mostramos un mensaje nuevo.
-                             *
-                             * La centralización de errores
-                             * la veremos en Fase 4.
-                             */
                             break;
                     }
                 }

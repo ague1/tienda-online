@@ -80,13 +80,6 @@ public class ProcessPaymentUseCase {
                         );
                     }
 
-                    /*
-                     * El pago fue confirmado.
-                     *
-                     * Ahora intentamos:
-                     *
-                     * pending → confirmed
-                     */
                     return orderRepository
                             .confirmOrderPayment(
                                     orderId

@@ -102,7 +102,6 @@ public class PromotionAdapter
         TextView textCountProduct;
         TextView textSpecialPrice;
         TextView texNormalPrice;
-
         Button addCart;
         LinearLayout linearLayout;
         Button buttonLess;
@@ -213,10 +212,6 @@ public class PromotionAdapter
         long specialPrice =
                 promotionProduct.getSpecialPrice();
 
-// -------------------------
-// DATOS
-// -------------------------
-
         holder.nameProduct.setText(
                 product.getNombre()
         );
@@ -225,7 +220,6 @@ public class PromotionAdapter
                 product.getDescripcion()
         );
 
-// Precio normal
         holder.texNormalPrice.setText(
                 "$" + formatMoney(
                         product.getPrecio()
@@ -241,7 +235,6 @@ public class PromotionAdapter
                 View.VISIBLE
         );
 
-// Precio especial
         holder.textSpecialPrice.setText(
                 "$" + formatMoney(
                         specialPrice
@@ -252,9 +245,6 @@ public class PromotionAdapter
                 View.VISIBLE
         );
 
-// -------------------------
-// IMAGEN
-// -------------------------
 
         Glide.with(
                         holder.imageProduct.getContext()
@@ -277,9 +267,6 @@ public class PromotionAdapter
                 .centerCrop()
                 .into(holder.imageProduct);
 
-// -------------------------
-// CARRITO
-// -------------------------
 
         int cartQuantity =
                 getCartQuantity(productId);

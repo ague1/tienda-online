@@ -1,66 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_screen"
+    android:fillViewport="true"
     tools:context=".features.profiles.presentation.fragment.EditProfileFragment">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:background="@android:color/white">
+        android:layout_height="match_parent"
+        android:padding="24dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Edit Profile"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
-
-        <EditText
-            android:id="@+id/inputProfileName"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name"
-            android:inputType="textPersonName"
-            android:layout_marginBottom="16dp"/>
+            android:layout_gravity="center"
+            app:cardBackgroundColor="@color/foodstore_surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="5dp">
 
-        <EditText
-            android:id="@+id/inputProfileEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:layout_marginBottom="16dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
 
-        <EditText
-            android:id="@+id/inputProfilePhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Phone"
-            android:inputType="phone"
-            android:layout_marginBottom="16dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:text="Editar perfil"
+                    android:textColor="@color/foodstore_primary"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/inputProfileAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Address"
-            android:inputType="textPostalAddress"
-            android:minLines="2"
-            android:gravity="top"
-            android:layout_marginBottom="24dp"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:hint="Nombre"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/foodstore_primary">
 
-        <Button
-            android:id="@+id/saveProfileButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Save changes"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/inputProfileName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName" />
 
-    </LinearLayout>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:hint="Email"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/foodstore_primary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/inputProfileEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:hint="Telefono"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/foodstore_primary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/inputProfilePhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="phone" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:hint="Direccion"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/foodstore_primary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/inputProfileAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:inputType="textPostalAddress"
+                        android:minLines="3" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveProfileButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Guardar cambios"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/foodstore_primary"
+                    app:cornerRadius="12dp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
 
 </ScrollView>

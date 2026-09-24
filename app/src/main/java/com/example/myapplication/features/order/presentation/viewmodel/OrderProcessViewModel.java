@@ -49,11 +49,6 @@ public class OrderProcessViewModel extends ViewModel {
             return;
         }
 
-        /*
-         * Si la Activity se recrea por una rotación,
-         * no necesitamos crear otro listener para
-         * la misma orden.
-         */
         if (orderId.equals(currentOrderId) &&
                 orderSubscription != null) {
             return;

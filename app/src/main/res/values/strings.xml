@@ -11,8 +11,13 @@
     <string name="link_forgotPassword">Olvide mi Contraseña</string>
     <string name="button_Login">Ingresa</string>
     <string name="create_account_text">
-    Don\'t have an account? <font color="#0000FF">Create one here</font>
+    ¿Primera vez? <font color="#0000FF">Crea una cuenta</font>
     </string>
+
+    <string name="into_account_text">
+    ¿Ya tienes una cuenta? <font color="#0000FF">Inicia sesión.</font>
+    </string>
+
 
     <!-- Strings used for Sing up  for navigation -->
     <string name="create_Account">Crea una Cuenta</string>
