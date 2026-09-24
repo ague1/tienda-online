@@ -1,22 +1,15 @@
-![Banner](https://raw.githubusercontent.com/ague1/tienda-online/main/banner.png)  
 
+
+
+[![Android](https://img.shields.io/badge/Platform-Android-green)](https://developer.android.com/) 
+[![Status](https://img.shields.io/badge/Status-Desarrollo-yellow)] 
+[![GitHub stars](https://img.shields.io/github/stars/ague1/tienda-online?style=social)](https://github.com/ague1/tienda-online/stargazers)
 
 
 https://github.com/user-attachments/assets/bdf70a65-4fbc-4cc9-b9f6-2b59ef3da7d3
 
 
-
-
-
-
-
-
-
 *Tu mercadito digital en la palma de tu mano*
-
-[![Android](https://img.shields.io/badge/Platform-Android-green)](https://developer.android.com/) 
-[![Status](https://img.shields.io/badge/Status-Desarrollo-yellow)] 
-[![GitHub stars](https://img.shields.io/github/stars/ague1/tienda-online?style=social)](https://github.com/ague1/tienda-online/stargazers)
 
 ---
 
